@@ -1,3 +1,9 @@
+###IDEA###
+ememeBot.iml
+/.idea
+/.mvn
+mvnw.*
+
 ### Maven ###
 target/
 pom.xml.tag
