@@ -1,5 +1,5 @@
 package ru.mamakapa.ememebot.service.sender;
 
-public abstract class AbstractSender {
+public abstract class AbstractSender implements Sender {
 
 }
