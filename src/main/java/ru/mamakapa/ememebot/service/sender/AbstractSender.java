@@ -1,5 +1,8 @@
 package ru.mamakapa.ememebot.service.sender;
 
-public abstract class AbstractSender implements Sender {
+import org.springframework.beans.factory.annotation.Autowired;
 
+public abstract class AbstractSender implements Sender {
+    @Autowired
+    private BotConfig botConfig;
 }
