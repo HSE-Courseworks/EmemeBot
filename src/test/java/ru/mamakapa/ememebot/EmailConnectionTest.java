@@ -7,9 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.service.email.*;
 
-import javax.mail.Part;
-import java.util.List;
-
 
 @SpringBootTest
 public class EmailConnectionTest {

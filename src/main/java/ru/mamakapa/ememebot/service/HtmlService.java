@@ -8,7 +8,6 @@ import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.swing.Java2DRenderer;
 
 import javax.imageio.ImageIO;
-import javax.mail.internet.MimeUtility;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
