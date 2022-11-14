@@ -50,19 +50,19 @@ public class VkSender extends AbstractSender {
                 vkBotConfig.getToken());
     }
     @Override
-    public void sendMessage(EmailLetter emailLetter) throws SendMessageException {
+    public void sendMessage(EmailLetter emailLetter, int recipientId) throws SendMessageException {
         try {
-            MessagesSendQuery message = this.getMessagesSendQuery(this.getRecipientId()).
+            MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
                     message(emailLetter.getEnvelope()+
                             emailLetter.getBodyPart());
             if(emailLetter.getHtmlFilePaths()!=null){
                 for(String path:emailLetter.getHtmlFilePaths()){
-                    message.attachment(getUploadPhotoAttachId(new File(path), getRecipientId()));
+                    message.attachment(getUploadPhotoAttachId(new File(path), recipientId));
                 }
             }
             if(emailLetter.getAttachmentFilePaths()!=null) {
                 for (String path : emailLetter.getAttachmentFilePaths()) {
-                    message.attachment(getUploadDocAttachId(new File(path), getRecipientId()));
+                    message.attachment(getUploadDocAttachId(new File(path), recipientId));
                 }
             }
             message.execute();
