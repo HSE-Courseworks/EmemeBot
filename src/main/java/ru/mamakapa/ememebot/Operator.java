@@ -31,7 +31,7 @@ public class Operator {
                if (messages != null){
                    for (Message message : messages){
                        EmailLetter letter = emailService.getEmailCompiler().constructLetter(message);
-                       sender.sendMessage(letter, );
+                       sender.sendMessage(letter, 623783153);
                    }
                }
                messages = null;
