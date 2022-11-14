@@ -10,9 +10,5 @@ import ru.mamakapa.ememebot.service.email.EmailLetter;
 @Getter
 public abstract class AbstractSender implements Sender {
     @Getter(AccessLevel.PROTECTED)
-    private EmailLetter emailLetter;
-    @Getter(AccessLevel.PROTECTED)
     private BotConfig botConfig;
-    @Getter(AccessLevel.PROTECTED)
-    private int recipientId;
 }

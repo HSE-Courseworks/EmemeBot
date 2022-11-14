@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mamakapa.ememebot.service.email.EmailLetter;
 import ru.mamakapa.ememebot.service.sender.exceptions.SendMessageException;
 
 import java.io.File;
@@ -49,19 +50,18 @@ public class VkSender extends AbstractSender {
                 vkBotConfig.getToken());
     }
     @Override
-    public void sendMessage() throws SendMessageException {
+    public void sendMessage(EmailLetter emailLetter) throws SendMessageException {
         try {
             MessagesSendQuery message = this.getMessagesSendQuery(this.getRecipientId()).
-                    message(this.getEmailLetter().getEnvelope()+
-                            this.getEmailLetter().getBodyPart()+
-                            this.getEmailLetter().getLinks());
-            if(getEmailLetter().getHtmlFilePaths()!=null){
-                for(String path:getEmailLetter().getHtmlFilePaths()){
+                    message(emailLetter.getEnvelope()+
+                            emailLetter.getBodyPart());
+            if(emailLetter.getHtmlFilePaths()!=null){
+                for(String path:emailLetter.getHtmlFilePaths()){
                     message.attachment(getUploadPhotoAttachId(new File(path), getRecipientId()));
                 }
             }
-            if(getEmailLetter().getAttachmentFilePaths()!=null) {
-                for (String path : getEmailLetter().getAttachmentFilePaths()) {
+            if(emailLetter.getAttachmentFilePaths()!=null) {
+                for (String path : emailLetter.getAttachmentFilePaths()) {
                     message.attachment(getUploadDocAttachId(new File(path), getRecipientId()));
                 }
             }

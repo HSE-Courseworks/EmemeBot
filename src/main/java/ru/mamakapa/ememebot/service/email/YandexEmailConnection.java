@@ -32,6 +32,7 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.setStore(store);
         imapConfig.setInbox(inbox);
         imapConfig.setConnected(true);
+        imapConfig.setMessageCount(inbox.getMessageCount());
     }
 
     @Override
