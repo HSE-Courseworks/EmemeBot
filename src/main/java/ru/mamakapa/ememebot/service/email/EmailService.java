@@ -15,4 +15,8 @@ public class EmailService {
         this.emailCompiler = emailCompiler;
         this.emailConnection = emailConnection;
     }
+
+    public void deleteLetter(EmailLetter letter){
+        le
+    }
 }

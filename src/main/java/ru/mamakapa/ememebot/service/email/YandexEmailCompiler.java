@@ -1,5 +1,6 @@
 package ru.mamakapa.ememebot.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.service.HtmlService;
 
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Slf4j
 @Service
 public class YandexEmailCompiler extends AbstractEmailCompiler{
     private final HtmlService htmlService;
@@ -105,35 +106,35 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
         String envelope = "";
         Address[] addresses;
         if ((addresses = message.getFrom()) != null){
-            envelope += "From:\n";
+            envelope += "От:\n";
             for (Address address : addresses) {
                 envelope += decodeMIMEB(address.toString()) + "\n";
             }
         }
         if ((addresses = message.getReplyTo()) != null){
-            envelope += "Reply to:\n";
+            envelope += "Ответ:\n";
             for (Address address : addresses) {
                 envelope += decodeMIMEB(address.toString()) + "\n";
             }
         }
         if ((addresses = message.getRecipients(Message.RecipientType.TO)) != null){
-            envelope += "To:\n";
+            envelope += "Кому:\n";
             for (Address address : addresses) {
                 envelope += decodeMIMEB(address.toString()) + "\n";
                 InternetAddress ia = (InternetAddress) address;
                 if (ia.isGroup()) {
                     InternetAddress[] groupAddresses = ia.getGroup(false);
-                    envelope += "    Group:\n";
+                    envelope += "    Группа:\n";
                     for (InternetAddress groupAddress : groupAddresses) {
                         envelope += decodeMIMEB(groupAddress.toString());
                     }
                 }
             }
         }
-        envelope += "SUBJECT: " + message.getSubject() + "\n";
+        envelope += "Тема: " + message.getSubject() + "\n";
         Date date = message.getSentDate();
         if (date != null){
-            envelope += "Send date: " + date + "\n";
+            envelope += "Отправленно: " + date + "\n";
         }
         return envelope;
     }
@@ -147,8 +148,10 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
             try {
                 File file = new File(fileName);
                 if (!file.exists()){
+                    log.info("Saving attachment " + fileName);
                     String linkFile = SAVING_DIRECTORY + "attachments" + File.separator + fileName;
                     ((MimeBodyPart) p).saveFile(linkFile);
+                    log.info(fileName + " saved!");
                     attachments.add(linkFile);
                 }
             }
@@ -160,15 +163,19 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
     }
     @Override
     protected String processHtml(String html) throws Exception{
+        log.info("Processing Html");
         String mesName = "message" + imgNum++ + ".png";
-        String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName ;
+        String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName;
         htmlService.convertHtmlToImage(html, filePath);
         htmls.add(filePath);
 
         List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
-        String linksPassage = "Ссылки из сообщения:\n";
-        for (String link : links){
-            linksPassage += link + "\n";
+        String linksPassage = "";
+        if (links != null || links.size() != 0) {
+            linksPassage = "Ссылки из сообщения:\n";
+            for (String link : links) {
+                linksPassage += link + "\n";
+            }
         }
         return linksPassage;
     }
