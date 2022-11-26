@@ -55,19 +55,15 @@ public class VkSender extends AbstractSender {
             MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
                     message(emailLetter.getEnvelope()+
                             emailLetter.getBodyPart());
-            String attachmentString = "";
-            if(emailLetter.getHtmlFilePaths().size()!=0){
-                for(String path:emailLetter.getHtmlFilePaths()){
-                    attachmentString += getUploadPhotoAttachId(new File(path), recipientId) + ",";
-                }
-            }
-            if(emailLetter.getAttachmentFilePaths().size()!=0) {
-                for (String path : emailLetter.getAttachmentFilePaths()) {
-                    attachmentString += getUploadDocAttachId(new File(path), recipientId) + ",";
-                }
-            }
-            attachmentString = attachmentString.substring(0, attachmentString.length()-1);
-            message.attachment(attachmentString);
+            StringBuilder attachmentStringBuilder = new StringBuilder("");
+            if(emailLetter.getHtmlFilePaths().size()!=0)
+                for(String path:emailLetter.getHtmlFilePaths())
+                    attachmentStringBuilder.append(getUploadPhotoAttachId(new File(path), recipientId)).append(",");
+            if(emailLetter.getAttachmentFilePaths().size()!=0)
+                for (String path : emailLetter.getAttachmentFilePaths())
+                    attachmentStringBuilder.append(getUploadDocAttachId(new File(path), recipientId)).append(",");
+            attachmentStringBuilder.delete(attachmentStringBuilder.length()-1, attachmentStringBuilder.length());
+            message.attachment(attachmentStringBuilder.toString());
             message.execute();
         } catch (ApiException | ClientException | IOException e) {
             throw new SendMessageException();
