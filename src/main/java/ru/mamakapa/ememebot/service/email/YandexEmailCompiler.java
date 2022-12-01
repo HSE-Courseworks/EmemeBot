@@ -106,21 +106,23 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
         StringBuilder envelope = new StringBuilder();
         Address[] addresses;
         if ((addresses = message.getFrom()) != null){
-            envelope.append("От:\n");
+            envelope.append("От: ");
             for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append("\n");
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
             }
+            envelope.append("\n");
         }
         if ((addresses = message.getReplyTo()) != null){
-            envelope.append("Ответ:\n");
+            envelope.append("Ответ: ");
             for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append("\n");
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
             }
+            envelope.append("\n");
         }
         if ((addresses = message.getRecipients(Message.RecipientType.TO)) != null){
-            envelope.append("Кому:\n");
+            envelope.append("Кому: ");
             for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append("\n");
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
                 InternetAddress ia = (InternetAddress) address;
                 if (ia.isGroup()) {
                     InternetAddress[] groupAddresses = ia.getGroup(false);
@@ -130,6 +132,7 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
                     }
                 }
             }
+            envelope.append("\n");
         }
         envelope.append("Тема: ").append(message.getSubject()).append("\n");
         Date date = message.getSentDate();
@@ -158,6 +161,9 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
             catch (IOException e) {
                 System.out.println("Failed to save attachment: " + e);
             }
+        }
+        else if (disp != null && disp.equalsIgnoreCase(Part.INLINE)){
+
         }
         return fileName;
     }

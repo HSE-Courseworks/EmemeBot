@@ -36,6 +36,7 @@ public class Operator {
                         for (Message message : messages) {
                             EmailLetter letter = emailService.getEmailCompiler().constructLetter(message);
                             sender.sendMessage(letter, 2000000000 + 2);
+                            emailService.deleteLetter(letter);
                         }
                     }
                     messages = null;

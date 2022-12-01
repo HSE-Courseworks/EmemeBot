@@ -42,7 +42,7 @@ public class EmailConnectionTest {
     @Test
     public void compileTest() throws Exception {
         emailConnection.connectToEmail(imapConfig);
-        EmailLetter letter = emailCompiler.constructLetter(emailConnection.getLastMessages(imapConfig, 3).get(1));
+        EmailLetter letter = emailCompiler.constructLetter(emailConnection.getLastMessages(imapConfig, 1).get(0));
         System.out.println(letter.getEnvelope());
         System.out.println(letter.getBodyPart());
         emailConnection.closeConnection(imapConfig);
