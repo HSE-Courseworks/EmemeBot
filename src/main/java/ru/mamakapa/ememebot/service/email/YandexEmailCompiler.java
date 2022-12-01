@@ -3,6 +3,7 @@ package ru.mamakapa.ememebot.service.email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.service.HtmlService;
+import ru.mamakapa.ememebot.service.Translit;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -152,7 +153,7 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
                 File file = new File(fileName);
                 if (!file.exists()){
                     log.info("Saving attachment " + fileName);
-                    String linkFile = SAVING_DIRECTORY + "attachments" + File.separator + fileName;
+                    String linkFile = SAVING_DIRECTORY + "attachments" + File.separator + Translit.cyrillicToLatin(fileName);
                     ((MimeBodyPart) p).saveFile(linkFile);
                     log.info(fileName + " saved!");
                     attachments.add(linkFile);
