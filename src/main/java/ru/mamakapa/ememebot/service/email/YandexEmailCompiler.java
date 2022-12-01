@@ -68,75 +68,75 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
     }
     @Override
     protected String processPart(Part p) throws Exception {
-        String bodyPart = "";
+        StringBuilder bodyPart = new StringBuilder();
         try {
             if (p.isMimeType("text/html")) {
-                bodyPart += processHtml((String) p.getContent()) + "\n";
+                bodyPart.append(processHtml((String) p.getContent())).append("\n");
             }
             else if (p.isMimeType("text/*") && p.getDisposition() == null) {
-                bodyPart += (String) p.getContent() + "\n";
+                bodyPart.append((String) p.getContent()).append("\n");
             }
             else if (p.isMimeType("multipart/*")) {
                 Multipart multipart = (Multipart) p.getContent();
                 level++;
                 int mpCount = multipart.getCount();
                 for (int i = 0; i < mpCount; ++i) {
-                    bodyPart += processPart(multipart.getBodyPart(i));
+                    bodyPart.append(processPart(multipart.getBodyPart(i)));
                 }
                 level--;
             } else if (p.isMimeType("messege/rfc822")) {
                 level++;
-                bodyPart += processPart((Part) p.getContent());
+                bodyPart.append(processPart((Part) p.getContent()));
                 level--;
             }
 
             if (level != 0 && (p instanceof MimeBodyPart) && !p.isMimeType("multipart/*")) {
                 String filename = processAttachment(p);
-                if (filename != null) bodyPart += "Вложение: " + filename+ "\n";
+                if (filename != null) bodyPart.append("Вложение: ").append(filename).append("\n");
             }
         }
         catch (Exception e){
             throw e;
         }
 
-        return bodyPart;
+        return bodyPart.toString();
     }
     @Override
     protected String processEnvelope(Message message) throws Exception {
-        String envelope = "";
+        StringBuilder envelope = new StringBuilder();
         Address[] addresses;
         if ((addresses = message.getFrom()) != null){
-            envelope += "От:\n";
+            envelope.append("От:\n");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append("\n");
             }
         }
         if ((addresses = message.getReplyTo()) != null){
-            envelope += "Ответ:\n";
+            envelope.append("Ответ:\n");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append("\n");
             }
         }
         if ((addresses = message.getRecipients(Message.RecipientType.TO)) != null){
-            envelope += "Кому:\n";
+            envelope.append("Кому:\n");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append("\n");
                 InternetAddress ia = (InternetAddress) address;
                 if (ia.isGroup()) {
                     InternetAddress[] groupAddresses = ia.getGroup(false);
-                    envelope += "    Группа:\n";
+                    envelope.append("    Группа:\n");
                     for (InternetAddress groupAddress : groupAddresses) {
-                        envelope += decodeMIMEB(groupAddress.toString());
+                        envelope.append(decodeMIMEB(groupAddress.toString()));
                     }
                 }
             }
         }
-        envelope += "Тема: " + message.getSubject() + "\n";
+        envelope.append("Тема: ").append(message.getSubject()).append("\n");
         Date date = message.getSentDate();
         if (date != null){
-            envelope += "Отправленно: " + date + "\n";
+            envelope.append("Отправленно: ").append(date).append("\n");
         }
-        return envelope;
+        return envelope.toString();
     }
     @Override
     protected String processAttachment(Part p) throws Exception {
