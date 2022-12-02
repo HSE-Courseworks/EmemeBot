@@ -70,34 +70,37 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
     @Override
     protected String processPart(Part p) throws Exception {
         StringBuilder bodyPart = new StringBuilder();
-        try {
-            if (p.isMimeType("text/html")) {
+        if (p.isMimeType("text/html")) {
+            try {
                 bodyPart.append(processHtml((String) p.getContent())).append("\n");
-            }
-            else if (p.isMimeType("text/*") && p.getDisposition() == null) {
-                bodyPart.append((String) p.getContent()).append("\n");
-            }
-            else if (p.isMimeType("multipart/*")) {
-                Multipart multipart = (Multipart) p.getContent();
-                level++;
-                int mpCount = multipart.getCount();
-                for (int i = 0; i < mpCount; ++i) {
-                    bodyPart.append(processPart(multipart.getBodyPart(i)));
-                }
-                level--;
-            } else if (p.isMimeType("messege/rfc822")) {
-                level++;
-                bodyPart.append(processPart((Part) p.getContent()));
-                level--;
-            }
-
-            if (level != 0 && (p instanceof MimeBodyPart) && !p.isMimeType("multipart/*")) {
-                String filename = processAttachment(p);
-                if (filename != null) bodyPart.append("Вложение: ").append(filename).append("\n");
+            }catch (Exception e){
+                bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
             }
         }
-        catch (Exception e){
-            throw e;
+        else if (p.isMimeType("text/*") && p.getDisposition() == null) {
+            try {
+                bodyPart.append((String) p.getContent()).append("\n");
+            }catch (Exception e){
+                bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
+            }
+        }
+        else if (p.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart) p.getContent();
+            level++;
+            int mpCount = multipart.getCount();
+            for (int i = 0; i < mpCount; ++i) {
+                bodyPart.append(processPart(multipart.getBodyPart(i)));
+            }
+            level--;
+        } else if (p.isMimeType("messege/rfc822")) {
+            level++;
+            bodyPart.append(processPart((Part) p.getContent()));
+            level--;
+        }
+
+        if (level != 0 && (p instanceof MimeBodyPart) && !p.isMimeType("multipart/*")) {
+            String filename = processAttachment(p);
+            if (filename != null) bodyPart.append("Вложение: ").append(filename).append("\n");
         }
 
         return bodyPart.toString();
@@ -163,28 +166,30 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
                 System.out.println("Failed to save attachment: " + e);
             }
         }
-        else if (disp != null && disp.equalsIgnoreCase(Part.INLINE)){
-
-        }
         return fileName;
     }
     @Override
-    protected String processHtml(String html) throws Exception{
+    protected String processHtml(String html) throws Exception {
         log.info("Processing Html");
         String mesName = "message" + imgNum++ + ".png";
         String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName;
-        htmlService.convertHtmlToImage(html, filePath);
-        htmls.add(filePath);
+        try {
+            htmlService.convertHtmlToImage(html, filePath);
+            htmls.add(filePath);
 
-        List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
-        String linksPassage = "";
-        if (links != null || links.size() != 0) {
-            linksPassage = "Ссылки из сообщения:\n";
-            for (String link : links) {
-                linksPassage += link + "\n";
+            List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
+            String linksPassage = "";
+            if (links != null || links.size() != 0) {
+                linksPassage = "Ссылки из сообщения:\n";
+                for (String link : links) {
+                    linksPassage += link + "\n";
+                }
             }
+            return linksPassage;
+        } catch (IOException e) {
+            log.info("HTML processing exception!");
+            throw e;
         }
-        return linksPassage;
     }
 
     @Override
