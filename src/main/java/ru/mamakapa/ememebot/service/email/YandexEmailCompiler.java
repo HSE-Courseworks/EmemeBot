@@ -70,16 +70,13 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
     @Override
     protected String processPart(Part p) throws Exception {
         StringBuilder bodyPart = new StringBuilder();
-        if (p.isMimeType("text/html")) {
+        if (p.isMimeType("text/*") && p.getDisposition() == null) {
             try {
-                bodyPart.append(processHtml((String) p.getContent())).append("\n");
-            }catch (Exception e){
-                bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
-            }
-        }
-        else if (p.isMimeType("text/*") && p.getDisposition() == null) {
-            try {
-                bodyPart.append((String) p.getContent()).append("\n");
+                String content = (String) p.getContent();
+                if (p.isMimeType("text/html")){
+                    content = processHtml(content);
+                }
+                bodyPart.append(content).append("\n");
             }catch (Exception e){
                 bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
             }
