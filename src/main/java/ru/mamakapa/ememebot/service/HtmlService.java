@@ -1,6 +1,7 @@
 package ru.mamakapa.ememebot.service;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -30,10 +31,10 @@ public class HtmlService {
     }
 
     public void convertHtmlToImage(String html, String imageFilePath) throws IOException {
-        convertToImg(parseHTMLToXML(html),imageFilePath);
+        convertHtmlToImage(parseHTMLToXML(html),imageFilePath);
     }
 
-    private void convertToImg(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {
+    public void convertHtmlToImage(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {
         String html = xhtml.toString();
         InputStream htmlStream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
         Tidy tidy = new Tidy();
@@ -42,5 +43,17 @@ public class HtmlService {
         Java2DRenderer renderer = new Java2DRenderer(document, WIDTH, -1);
         BufferedImage img = renderer.getImage();
         ImageIO.write(img, IMAGE_FORMAT, new File(imageFilePath));
+    }
+
+    public org.jsoup.nodes.Document deleteTag(org.jsoup.nodes.Document xhtml, String tag){
+        Elements el = xhtml.select(tag);
+        for (Element e : el) {
+            e.remove();
+        }
+        return xhtml;
+    }
+
+    public org.jsoup.nodes.Document deleteTag(String html, String tag){
+        return deleteTag(parseHTMLToXML(html), tag);
     }
 }

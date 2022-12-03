@@ -173,20 +173,26 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
         try {
             htmlService.convertHtmlToImage(html, filePath);
             htmls.add(filePath);
-
-            List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
-            String linksPassage = "";
-            if (links != null || links.size() != 0) {
-                linksPassage = "Ссылки из сообщения:\n";
-                for (String link : links) {
-                    linksPassage += link + "\n";
-                }
+        } catch (Exception e) {
+            log.info("Exception in first conversion, tries to delete img tags");
+            try {
+                htmlService.convertHtmlToImage(htmlService.deleteTag(html, "img"), filePath);
+                htmls.add(filePath);
+            } catch (Exception ex) {
+                log.info("HTML processing exception!");
+                throw ex;
             }
-            return linksPassage;
-        } catch (IOException e) {
-            log.info("HTML processing exception!");
-            throw e;
         }
+
+        List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
+        String linksPassage = "";
+        if (links != null || links.size() != 0) {
+            linksPassage = "Ссылки из сообщения:\n";
+            for (String link : links) {
+                linksPassage += link + "\n";
+            }
+        }
+        return linksPassage;
     }
 
     @Override
