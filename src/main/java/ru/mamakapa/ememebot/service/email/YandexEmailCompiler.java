@@ -1,7 +1,9 @@
 package ru.mamakapa.ememebot.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.service.HtmlService;
+import ru.mamakapa.ememebot.service.Translit;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -15,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Slf4j
 @Service
 public class YandexEmailCompiler extends AbstractEmailCompiler{
     private final HtmlService htmlService;
@@ -67,75 +69,78 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
     }
     @Override
     protected String processPart(Part p) throws Exception {
-        String bodyPart = "";
-        try {
-            if (p.isMimeType("text/html")) {
-                bodyPart += processHtml((String) p.getContent()) + "\n";
-            }
-            else if (p.isMimeType("text/*") && p.getDisposition() == null) {
-                bodyPart += (String) p.getContent() + "\n";
-            }
-            else if (p.isMimeType("multipart/*")) {
-                Multipart multipart = (Multipart) p.getContent();
-                level++;
-                int mpCount = multipart.getCount();
-                for (int i = 0; i < mpCount; ++i) {
-                    bodyPart += processPart(multipart.getBodyPart(i));
+        StringBuilder bodyPart = new StringBuilder();
+        if (p.isMimeType("text/*") && p.getDisposition() == null) {
+            try {
+                String content = (String) p.getContent();
+                if (p.isMimeType("text/html")){
+                    content = processHtml(content);
                 }
-                level--;
-            } else if (p.isMimeType("messege/rfc822")) {
-                level++;
-                bodyPart += processPart((Part) p.getContent());
-                level--;
-            }
-
-            if (level != 0 && (p instanceof MimeBodyPart) && !p.isMimeType("multipart/*")) {
-                String filename = processAttachment(p);
-                if (filename != null) bodyPart += "Вложение: " + filename+ "\n";
+                bodyPart.append(content).append("\n");
+            }catch (Exception e){
+                bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
             }
         }
-        catch (Exception e){
-            throw e;
+        else if (p.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart) p.getContent();
+            level++;
+            int mpCount = multipart.getCount();
+            for (int i = 0; i < mpCount; ++i) {
+                bodyPart.append(processPart(multipart.getBodyPart(i)));
+            }
+            level--;
+        } else if (p.isMimeType("messege/rfc822")) {
+            level++;
+            bodyPart.append(processPart((Part) p.getContent()));
+            level--;
         }
 
-        return bodyPart;
+        if (level != 0 && (p instanceof MimeBodyPart) && !p.isMimeType("multipart/*")) {
+            String filename = processAttachment(p);
+            if (filename != null) bodyPart.append("Вложение: ").append(filename).append("\n");
+        }
+
+        return bodyPart.toString();
     }
     @Override
     protected String processEnvelope(Message message) throws Exception {
-        String envelope = "";
+        StringBuilder envelope = new StringBuilder();
         Address[] addresses;
         if ((addresses = message.getFrom()) != null){
-            envelope += "From:\n";
+            envelope.append("От: ");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
             }
+            envelope.append("\n");
         }
         if ((addresses = message.getReplyTo()) != null){
-            envelope += "Reply to:\n";
+            envelope.append("Ответ: ");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
             }
+            envelope.append("\n");
         }
         if ((addresses = message.getRecipients(Message.RecipientType.TO)) != null){
-            envelope += "To:\n";
+            envelope.append("Кому: ");
             for (Address address : addresses) {
-                envelope += decodeMIMEB(address.toString()) + "\n";
+                envelope.append(decodeMIMEB(address.toString())).append(" ");
                 InternetAddress ia = (InternetAddress) address;
                 if (ia.isGroup()) {
                     InternetAddress[] groupAddresses = ia.getGroup(false);
-                    envelope += "    Group:\n";
+                    envelope.append("    Группа:\n");
                     for (InternetAddress groupAddress : groupAddresses) {
-                        envelope += decodeMIMEB(groupAddress.toString());
+                        envelope.append(decodeMIMEB(groupAddress.toString()));
                     }
                 }
             }
+            envelope.append("\n");
         }
-        envelope += "SUBJECT: " + message.getSubject() + "\n";
+        envelope.append("Тема: ").append(message.getSubject()).append("\n");
         Date date = message.getSentDate();
         if (date != null){
-            envelope += "Send date: " + date + "\n";
+            envelope.append("Отправленно: ").append(date).append("\n");
         }
-        return envelope;
+        return envelope.toString();
     }
     @Override
     protected String processAttachment(Part p) throws Exception {
@@ -147,8 +152,10 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
             try {
                 File file = new File(fileName);
                 if (!file.exists()){
-                    String linkFile = SAVING_DIRECTORY + "attachments" + File.separator + fileName;
+                    log.info("Saving attachment " + fileName);
+                    String linkFile = SAVING_DIRECTORY + "attachments" + File.separator + Translit.cyrillicToLatin(fileName);
                     ((MimeBodyPart) p).saveFile(linkFile);
+                    log.info(fileName + " saved!");
                     attachments.add(linkFile);
                 }
             }
@@ -159,16 +166,31 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
         return fileName;
     }
     @Override
-    protected String processHtml(String html) throws Exception{
+    protected String processHtml(String html) throws Exception {
+        log.info("Processing Html");
         String mesName = "message" + imgNum++ + ".png";
-        String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName ;
-        htmlService.convertHtmlToImage(html, filePath);
-        htmls.add(filePath);
+        String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName;
+        try {
+            htmlService.convertHtmlToImage(html, filePath);
+            htmls.add(filePath);
+        } catch (Exception e) {
+            log.info("Exception in first conversion, tries to delete img tags");
+            try {
+                htmlService.convertHtmlToImage(htmlService.deleteTag(html, "img"), filePath);
+                htmls.add(filePath);
+            } catch (Exception ex) {
+                log.info("HTML processing exception!");
+                throw ex;
+            }
+        }
 
         List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
-        String linksPassage = "Ссылки из сообщения:\n";
-        for (String link : links){
-            linksPassage += link + "\n";
+        String linksPassage = "";
+        if (links != null || links.size() != 0) {
+            linksPassage = "Ссылки из сообщения:\n";
+            for (String link : links) {
+                linksPassage += link + "\n";
+            }
         }
         return linksPassage;
     }

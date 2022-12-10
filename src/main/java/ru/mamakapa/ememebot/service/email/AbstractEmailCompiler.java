@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.mail.Message;
 import javax.mail.Part;
+import java.io.IOException;
 
 @Getter
 @Setter

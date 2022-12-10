@@ -40,6 +40,8 @@ public class Operator {
                         for (Message message : messages) {
                             EmailLetter letter = emailService.getEmailCompiler().constructLetter(message);
                             sender.sendMessage(letter, USER_GROUP_ID);
+                            emailService.deleteLetter(letter);
+
                         }
                     }
                     Thread.sleep(TIME_SLEEP);
