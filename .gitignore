@@ -1,5 +1,6 @@
 #project
-src/main/resources/
+src/main/resources/attachments/
+src/main/resources/templates/
 application.properties
 
 HELP.md
