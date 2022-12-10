@@ -9,10 +9,12 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.queries.messages.MessagesSendQuery;
 import com.vk.api.sdk.queries.upload.UploadDocQuery;
 import com.vk.api.sdk.queries.upload.UploadPhotoMessageQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mamakapa.ememebot.service.email.EmailLetter;
 import ru.mamakapa.ememebot.service.sender.exceptions.SendMessageException;
 
 import java.io.File;
@@ -25,6 +27,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class VkSender extends AbstractSender {
     private TransportClient transportClient;
     private VkApiClient vk;
@@ -42,29 +45,29 @@ public class VkSender extends AbstractSender {
     @Autowired
     public VkSender(VkBotConfig vkBotConfig){
         this.setBotConfig(vkBotConfig);
-
         this.transportClient = new HttpTransportClient();
         this.vk = new VkApiClient(this.transportClient);
         this.actor = new GroupActor(Integer.parseInt(vkBotConfig.getIdentificator()),
                 vkBotConfig.getToken());
     }
     @Override
-    public void sendMessage() throws SendMessageException {
+    public void sendMessage(EmailLetter emailLetter, int recipientId) throws SendMessageException {
         try {
-            MessagesSendQuery message = this.getMessagesSendQuery(this.getRecipientId()).
-                    message(this.getEmailLetter().getEnvelope()+
-                            this.getEmailLetter().getBodyPart()+
-                            this.getEmailLetter().getLinks());
-            if(getEmailLetter().getHtmlFilePaths()!=null){
-                for(String path:getEmailLetter().getHtmlFilePaths()){
-                    message.attachment(getUploadPhotoAttachId(new File(path), getRecipientId()));
-                }
+            MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
+                    message(emailLetter.getEnvelope()+
+                            emailLetter.getBodyPart());
+            StringBuilder attachmentStringBuilder = new StringBuilder("");
+            if(emailLetter.getHtmlFilePaths().size()!=0) {
+                for(String path:emailLetter.getHtmlFilePaths())
+                    attachmentStringBuilder.append(getUploadPhotoAttachId(new File(path), recipientId)).append(",");
             }
-            if(getEmailLetter().getAttachmentFilePaths()!=null) {
-                for (String path : getEmailLetter().getAttachmentFilePaths()) {
-                    message.attachment(getUploadDocAttachId(new File(path), getRecipientId()));
-                }
+            if(emailLetter.getAttachmentFilePaths().size()!=0) {
+                for (String path : emailLetter.getAttachmentFilePaths())
+                    attachmentStringBuilder.append(getUploadDocAttachId(new File(path), recipientId)).append(",");
             }
+            attachmentStringBuilder.delete(attachmentStringBuilder.length()-1, attachmentStringBuilder.length());
+            message.attachment(attachmentStringBuilder.toString());
+            log.info("Sending message");
             message.execute();
         } catch (ApiException | ClientException | IOException e) {
             throw new SendMessageException();
@@ -78,6 +81,7 @@ public class VkSender extends AbstractSender {
         }
     }
     public String getUploadDocAttachId(File file, int peerId) throws IOException, ClientException, ApiException, JSONException {
+        log.info("Uploading document in attachments");
         String[] fileParts = file.getName().split("\\.");
         String fileExtension = fileParts[fileParts.length-1];
         if(fileExtensionsDenied.contains(fileExtension)){
@@ -100,6 +104,7 @@ public class VkSender extends AbstractSender {
         }
     }
     public String getUploadPhotoAttachId(File file, int peerId) throws IOException, ClientException, ApiException, JSONException {
+        log.info("Uploading photo in attachments");
         URI url = vk.photos().getMessagesUploadServer(actor).peerId(peerId).execute().getUploadUrl();
         UploadPhotoMessageQuery uploadPhotoMessageQuery = vk.upload().photoMessage(url.toString(), file);
         JSONObject photoJsonObject = new JSONObject(uploadPhotoMessageQuery.executeAsString());
