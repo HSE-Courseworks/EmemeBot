@@ -33,7 +33,8 @@ public class VkSender extends AbstractSender {
     private VkApiClient vk;
     private GroupActor actor;
     private Random random = new Random();
-    private static final int GROUP_PEER_ID = 2000000000;
+    public static final int GROUP_PEER_ID = 2000000000;
+    private static final int MAX_MESSAGE_LENGTH = 4096;
     private static final Set<String> fileExtensionsDenied = new HashSet<>(Arrays.asList(
             "exe",
             "mp3"
@@ -53,26 +54,57 @@ public class VkSender extends AbstractSender {
     @Override
     public void sendMessage(EmailLetter emailLetter, int recipientId) throws SendMessageException {
         try {
-            MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
-                    message(emailLetter.getEnvelope()+
-                            emailLetter.getBodyPart());
-            StringBuilder attachmentStringBuilder = new StringBuilder("");
-            if(emailLetter.getHtmlFilePaths().size()!=0) {
-                for(String path:emailLetter.getHtmlFilePaths())
-                    attachmentStringBuilder.append(getUploadPhotoAttachId(new File(path), recipientId)).append(",");
+            if(emailLetter.getEnvelope().length()+emailLetter.getBodyPart().length()<=MAX_MESSAGE_LENGTH) {
+                MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
+                        message(emailLetter.getEnvelope() +
+                                emailLetter.getBodyPart());
+                addMessageAttachments(emailLetter, recipientId, message);
+                log.info("Sending message");
+                message.execute();
+            }else {
+                log.info("Splitting letter...");
+                int currentMessageStartPosition = 0;
+                log.info("Sending envelope");
+                while (currentMessageStartPosition<emailLetter.getEnvelope().length()){
+                    this.getMessagesSendQuery(recipientId).message(emailLetter.getEnvelope().
+                                    substring(currentMessageStartPosition,
+                                            Math.min(currentMessageStartPosition + MAX_MESSAGE_LENGTH, emailLetter.getEnvelope().length()))).
+                            execute();
+                    currentMessageStartPosition += MAX_MESSAGE_LENGTH;
+                }
+                log.info("Sending bodyPart");
+                currentMessageStartPosition = 0;
+                while (currentMessageStartPosition<emailLetter.getBodyPart().length()){
+                    this.getMessagesSendQuery(recipientId).message(emailLetter.getBodyPart().
+                                    substring(currentMessageStartPosition,
+                                            Math.min(currentMessageStartPosition + MAX_MESSAGE_LENGTH, emailLetter.getBodyPart().length()))).
+                            execute();
+                    currentMessageStartPosition += MAX_MESSAGE_LENGTH;
+                }
+                MessagesSendQuery message = this.getMessagesSendQuery(recipientId);
+                addMessageAttachments(emailLetter, recipientId, message);
+                log.info("Sending files");
+                message.execute();
             }
-            if(emailLetter.getAttachmentFilePaths().size()!=0) {
-                for (String path : emailLetter.getAttachmentFilePaths())
-                    attachmentStringBuilder.append(getUploadDocAttachId(new File(path), recipientId)).append(",");
-            }
-            attachmentStringBuilder.delete(attachmentStringBuilder.length()-1, attachmentStringBuilder.length());
-            message.attachment(attachmentStringBuilder.toString());
-            log.info("Sending message");
-            message.execute();
         } catch (ApiException | ClientException | IOException e) {
             throw new SendMessageException();
         }
     }
+
+    private void addMessageAttachments(EmailLetter emailLetter, int recipientId, MessagesSendQuery message) throws IOException, ClientException, ApiException {
+        StringBuilder attachmentStringBuilder = new StringBuilder("");
+        if (emailLetter.getHtmlFilePaths().size() != 0) {
+            for (String path : emailLetter.getHtmlFilePaths())
+                attachmentStringBuilder.append(getUploadPhotoAttachId(new File(path), recipientId)).append(",");
+        }
+        if (emailLetter.getAttachmentFilePaths().size() != 0) {
+            for (String path : emailLetter.getAttachmentFilePaths())
+                attachmentStringBuilder.append(getUploadDocAttachId(new File(path), recipientId)).append(",");
+        }
+        attachmentStringBuilder.delete(attachmentStringBuilder.length() - 1, attachmentStringBuilder.length());
+        message.attachment(attachmentStringBuilder.toString());
+    }
+
     public MessagesSendQuery getMessagesSendQuery(int peerId){
         if(peerId>=GROUP_PEER_ID){
             return this.vk.messages().send(this.actor).chatId(peerId-GROUP_PEER_ID).randomId(random.nextInt(10000));
