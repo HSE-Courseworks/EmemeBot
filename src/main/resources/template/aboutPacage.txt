@@ -1,0 +1,1 @@
+There should store html images.
