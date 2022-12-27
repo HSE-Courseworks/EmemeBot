@@ -3,6 +3,7 @@ package ru.mamakapa.ememebot;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ import java.util.List;
 @Slf4j
 public class Operator {
     @Autowired
+    //Use exactly "telegram" sender
+    //if you want to use vkontakte you must write instead it: "vk"
+    @Qualifier("telegram")
     private Sender sender;
     @Autowired
     private EmailService emailService;
