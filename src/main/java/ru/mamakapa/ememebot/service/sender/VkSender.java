@@ -101,7 +101,9 @@ public class VkSender extends AbstractSender {
             for (String path : emailLetter.getAttachmentFilePaths())
                 attachmentStringBuilder.append(getUploadDocAttachId(new File(path), recipientId)).append(",");
         }
-        attachmentStringBuilder.delete(attachmentStringBuilder.length() - 1, attachmentStringBuilder.length());
+        if(!attachmentStringBuilder.isEmpty()){
+            attachmentStringBuilder.delete(attachmentStringBuilder.length() - 1, attachmentStringBuilder.length());
+        }
         message.attachment(attachmentStringBuilder.toString());
     }
 
