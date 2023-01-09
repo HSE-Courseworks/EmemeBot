@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-@Component
+@Component("vk")
 @Slf4j
 public class VkSender extends AbstractSender {
     private TransportClient transportClient;
