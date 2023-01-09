@@ -25,7 +25,7 @@ public class Operator {
     private ImapConfig imapConfig;
 
     private static final int TIME_SLEEP = 3000;
-    @Value("${vk.user.group_id}")
+    @Value("${user.group_id}")
     private static int USER_GROUP_ID;
     public void run(){
         try {
