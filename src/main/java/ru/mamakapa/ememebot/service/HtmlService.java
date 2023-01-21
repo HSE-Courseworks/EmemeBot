@@ -1,5 +1,6 @@
 package ru.mamakapa.ememebot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
+@Slf4j
 public class HtmlService {
     private static final int WIDTH = 720;
     private static final String IMAGE_FORMAT = "png";
@@ -35,13 +37,16 @@ public class HtmlService {
     }
 
     public void convertHtmlToImage(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {
+        log.info("Trying to convert HTML to Image");
         String html = xhtml.toString();
         InputStream htmlStream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
         Tidy tidy = new Tidy();
         Document document = tidy.parseDOM(new InputStreamReader(htmlStream, StandardCharsets.UTF_8), null);
 
         Java2DRenderer renderer = new Java2DRenderer(document, WIDTH, -1);
+        log.info("Rendering started");
         BufferedImage img = renderer.getImage();
+        log.info("Writing to file");
         ImageIO.write(img, IMAGE_FORMAT, new File(imageFilePath));
     }
 
