@@ -30,6 +30,7 @@ public class Operator {
     @Value("${user.group_id}")
     private int USER_GROUP_ID;
     @Scheduled(fixedRate = TIME_SLEEP)
+
     public void run(){
         try {
             log.info("I'm listening...");
