@@ -1,4 +1,7 @@
 #project
+src/main/resources/*
+!src/main/resources/attachments/
+!src/main/resources/templates/
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
