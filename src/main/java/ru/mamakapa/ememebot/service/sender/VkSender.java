@@ -58,9 +58,9 @@ public class VkSender extends AbstractSender {
                 MessagesSendQuery message = this.getMessagesSendQuery(recipientId).
                         message(emailLetter.getEnvelope() +
                                 emailLetter.getBodyPart());
-                sendMessageAttachments(emailLetter, recipientId);
                 log.info("Sending message");
                 message.execute();
+                sendMessageAttachments(emailLetter, recipientId);
             }else {
                 log.info("Splitting letter...");
                 int currentMessageStartPosition = 0;
@@ -81,9 +81,7 @@ public class VkSender extends AbstractSender {
                             execute();
                     currentMessageStartPosition += MAX_MESSAGE_LENGTH;
                 }
-
                 sendMessageAttachments(emailLetter, recipientId);
-
             }
         } catch (ApiException | ClientException | IOException e) {
             throw new SendMessageException();
