@@ -81,4 +81,13 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.getStore().close();
         imapConfig.setConnected(false);
     }
+
+    @Override
+    public boolean isConnected(ImapConfig imapConfig) throws MessagingException {
+        if (imapConfig.getInbox() != null) {
+            imapConfig.setConnected(imapConfig.getInbox().isOpen());
+            return imapConfig.isConnected();
+        }
+        else return false;
+    }
 }
