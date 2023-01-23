@@ -107,28 +107,6 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
             }
             envelope.append("\n");
         }
-        if ((addresses = message.getReplyTo()) != null){
-            envelope.append("Ответ: ");
-            for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append(" ");
-            }
-            envelope.append("\n");
-        }
-        if ((addresses = message.getRecipients(Message.RecipientType.TO)) != null){
-            envelope.append("Кому: ");
-            for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append(" ");
-                InternetAddress ia = (InternetAddress) address;
-                if (ia.isGroup()) {
-                    InternetAddress[] groupAddresses = ia.getGroup(false);
-                    envelope.append("    Группа:\n");
-                    for (InternetAddress groupAddress : groupAddresses) {
-                        envelope.append(decodeMIMEB(groupAddress.toString()));
-                    }
-                }
-            }
-            envelope.append("\n");
-        }
         envelope.append("Тема: ").append(message.getSubject()).append("\n");
         Date date = message.getSentDate();
         if (date != null){
