@@ -20,7 +20,7 @@ public class Operator {
     @Autowired
     //Use exactly "telegram" sender
     //if you want to use vkontakte you must write instead it: "vk"
-    @Qualifier("telegram")
+    @Qualifier("vk")
     private Sender sender;
     @Autowired
     private EmailService emailService;

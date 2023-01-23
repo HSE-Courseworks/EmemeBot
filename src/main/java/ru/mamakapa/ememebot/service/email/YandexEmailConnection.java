@@ -16,6 +16,7 @@ import java.util.Properties;
 @Slf4j
 @Service
 public class YandexEmailConnection extends AbstractEmailConnection {
+
     @Override
     public void connectToEmail(ImapConfig imapConfig) throws Exception {
         Properties prop = new Properties();
@@ -39,7 +40,7 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.setStore(store);
         imapConfig.setInbox(inbox);
         imapConfig.setConnected(true);
-        imapConfig.setMessageCount(inbox.getMessageCount()-1);
+        imapConfig.setMessageCount(inbox.getMessageCount()-getStartLettersToShow());
     }
 
     @Override

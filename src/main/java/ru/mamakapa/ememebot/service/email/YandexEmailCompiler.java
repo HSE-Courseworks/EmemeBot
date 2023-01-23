@@ -20,17 +20,11 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class YandexEmailCompiler extends AbstractEmailCompiler{
-    private final HtmlService htmlService;
     private int level = 0;
     private int attNum = 0;
     private static int imgNum = 1;
     private List<String> attachments = new ArrayList<>();
     private List<String> htmls = new ArrayList<>();
-
-    public YandexEmailCompiler(HtmlService htmlService) {
-        this.htmlService = htmlService;
-    }
-
     private String decodeMIMEB(String line) {
         try {
             String decodedLine = MimeUtility.decodeText(line);
@@ -171,12 +165,12 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
         String mesName = "message" + imgNum++ + ".png";
         String filePath = SAVING_DIRECTORY + "templates" + File.separator + mesName;
         try {
-            htmlService.convertHtmlToImage(html, filePath);
+            HtmlService.convertHtmlToImage(html, filePath);
             htmls.add(filePath);
         } catch (Exception e) {
             log.info("Exception in first conversion, tries to delete img tags");
             try {
-                htmlService.convertHtmlToImage(htmlService.deleteTag(html, "img"), filePath);
+                HtmlService.convertHtmlToImage(HtmlService.deleteTag(html, "img"), filePath);
                 htmls.add(filePath);
             } catch (Exception ex) {
                 log.info("HTML processing exception!");
@@ -184,9 +178,9 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
             }
         }
 
-        List<String> links = htmlService.extractLinks(htmlService.parseHTMLToXML(html));
+        List<String> links = HtmlService.extractLinks(HtmlService.parseHTMLToXML(html));
         String linksPassage = "";
-        if (links != null || links.size() != 0) {
+        if (links != null && links.size() != 0) {
             linksPassage = "Ссылки из сообщения:\n";
             for (String link : links) {
                 linksPassage += link + "\n";
