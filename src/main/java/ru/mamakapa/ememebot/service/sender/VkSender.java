@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-@Component("vk")
 @Slf4j
 public class VkSender extends AbstractSender {
     private TransportClient transportClient;
@@ -43,7 +42,6 @@ public class VkSender extends AbstractSender {
             "jpg",
             "png",
             "gif"));
-    @Autowired
     public VkSender(VkBotConfig vkBotConfig){
         this.setBotConfig(vkBotConfig);
         this.transportClient = new HttpTransportClient();

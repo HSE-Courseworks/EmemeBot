@@ -1,8 +1,6 @@
 package ru.mamakapa.ememebot.service.sender;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -16,13 +14,11 @@ import ru.mamakapa.ememebot.service.sender.exceptions.SendMessageException;
 import java.io.File;
 
 @Slf4j
-@Component("telegram")
 public class TelegramSender extends AbstractSender {
     private DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
     private DefaultAbsSender absSender;
     private static final int MAX_MESSAGE_LENGTH = 4096;
 
-    @Autowired
     public TelegramSender(TelegramBotConfig config) {
         this.absSender = new DefaultAbsSender(defaultBotOptions) {
             @Override
