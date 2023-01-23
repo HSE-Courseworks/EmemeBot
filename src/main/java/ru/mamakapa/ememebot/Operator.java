@@ -20,7 +20,7 @@ public class Operator {
     @Autowired
     //Use exactly "telegram" sender
     //if you want to use vkontakte you must write instead it: "vk"
-    @Qualifier("telegram")
+    @Qualifier("vk")
     private Sender sender;
     @Autowired
     private EmailService emailService;
@@ -34,7 +34,7 @@ public class Operator {
     public void run(){
         try {
             log.info("I'm listening...");
-            if (!imapConfig.isConnected()) emailService.getEmailConnection().connectToEmail(imapConfig);
+            if (!emailService.getEmailConnection().isConnected(imapConfig)) emailService.getEmailConnection().connectToEmail(imapConfig);
             List<Message> messages;
             try {
                 messages = emailService.getEmailConnection().getLastMessages(imapConfig,
