@@ -18,8 +18,6 @@ import java.util.List;
 @Slf4j
 public class Operator {
     @Autowired
-    //Use exactly "telegram" sender
-    //if you want to use vkontakte you must write instead it: "vk"
     private Sender sender;
     @Autowired
     private EmailService emailService;
