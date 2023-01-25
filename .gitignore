@@ -1,3 +1,6 @@
+#logs
+EmemeBotLogs.log
+
 #project
 src/main/resources/*
 HELP.md
