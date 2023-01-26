@@ -30,8 +30,6 @@ public class EmailConnectionTest {
     @Test
     public void getLastMessagesTest() throws Exception {
         emailConnection.connectToEmail(imapConfig);
-        Message message = emailConnection.getLastMessages(imapConfig,1).get(0);
-        System.out.println((MimeMessage)message);
         Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,1));
         emailConnection.closeConnection(imapConfig);
     }
