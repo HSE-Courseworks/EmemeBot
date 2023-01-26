@@ -7,6 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.service.email.*;
 
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
+
 
 @SpringBootTest
 public class EmailConnectionTest {
@@ -27,6 +30,8 @@ public class EmailConnectionTest {
     @Test
     public void getLastMessagesTest() throws Exception {
         emailConnection.connectToEmail(imapConfig);
+        Message message = emailConnection.getLastMessages(imapConfig,1).get(0);
+        System.out.println((MimeMessage)message);
         Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,1));
         emailConnection.closeConnection(imapConfig);
     }
