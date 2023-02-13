@@ -15,28 +15,27 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@Service
 @Slf4j
 public class HtmlService {
     private static final int WIDTH = 720;
     private static final String IMAGE_FORMAT = "png";
 
-    public org.jsoup.nodes.Document parseHTMLToXML(String html){
+    static public org.jsoup.nodes.Document parseHTMLToXML(String html){
         org.jsoup.nodes.Document document = Jsoup.parse(html, "UTF-8");
         document.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
         return document;
     }
 
-    public List<String> extractLinks(org.jsoup.nodes.Document xhtml){
+    static public List<String> extractLinks(org.jsoup.nodes.Document xhtml){
         Elements links = xhtml.select("a[href]");
         return links.eachAttr("href");
     }
 
-    public void convertHtmlToImage(String html, String imageFilePath) throws IOException {
+    static public void convertHtmlToImage(String html, String imageFilePath) throws IOException {
         convertHtmlToImage(parseHTMLToXML(html),imageFilePath);
     }
 
-    public void convertHtmlToImage(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {
+    static public void convertHtmlToImage(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {
         log.info("Trying to convert HTML to Image");
         String html = xhtml.toString();
         InputStream htmlStream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
@@ -50,7 +49,7 @@ public class HtmlService {
         ImageIO.write(img, IMAGE_FORMAT, new File(imageFilePath));
     }
 
-    public org.jsoup.nodes.Document deleteTag(org.jsoup.nodes.Document xhtml, String tag){
+    static public org.jsoup.nodes.Document deleteTag(org.jsoup.nodes.Document xhtml, String tag){
         Elements el = xhtml.select(tag);
         for (Element e : el) {
             e.remove();
@@ -58,7 +57,7 @@ public class HtmlService {
         return xhtml;
     }
 
-    public org.jsoup.nodes.Document deleteTag(String html, String tag){
+    static public org.jsoup.nodes.Document deleteTag(String html, String tag){
         return deleteTag(parseHTMLToXML(html), tag);
     }
 }

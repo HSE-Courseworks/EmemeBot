@@ -11,4 +11,5 @@ public interface EmailConnection {
     List<Message> getLastMessages(ImapConfig imapConfig, int mesCount) throws MessagingException;
     int checkUpdates(ImapConfig imapConfig) throws MessagingException;
     void closeConnection(ImapConfig imapConfig) throws MessagingException;
+    boolean isConnected(ImapConfig imapConfig) throws MessagingException;
 }
