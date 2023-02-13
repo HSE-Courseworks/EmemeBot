@@ -11,7 +11,7 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "emails_table")
+@Table(name = "emails_table", uniqueConstraints = @UniqueConstraint(columnNames = {"imapEmailId"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +28,6 @@ public class EmailMessage {
             generator = "emailID_sequence"
     )
     private Long id;
-    @Column(unique = true)
     private String imapEmailId;
     private Date sendDate;
 

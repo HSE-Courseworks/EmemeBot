@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.config.ImapConfig;
@@ -11,6 +12,7 @@ import ru.mamakapa.ememebot.config.ImapConfig;
 @Getter
 @Setter
 @Service
+@Qualifier("AbstractEmailConnection")
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class AbstractEmailConnection implements EmailConnection{

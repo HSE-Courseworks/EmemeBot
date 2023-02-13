@@ -3,20 +3,31 @@ package ru.mamakapa.ememebot.service.email;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.config.ImapConfig;
+import ru.mamakapa.ememebot.entities.EmailMessage;
 import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
 
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Stack;
 
+@Service
 @Getter
 @Setter
+@Qualifier("EmailStableConnection")
 @Slf4j
-public class YandexEmailConnection extends AbstractEmailConnection {
+public class EmailStableConnection extends AbstractEmailConnection{
+
+    final private EmailMessageRepo emailMessageRepo;
+
+    public EmailStableConnection(EmailMessageRepo emailMessageRepo) {
+        this.emailMessageRepo = emailMessageRepo;
+    }
 
     @Override
     public void connectToEmail(ImapConfig imapConfig) throws Exception {
@@ -41,13 +52,22 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.setStore(store);
         imapConfig.setInbox(inbox);
         imapConfig.setConnected(true);
-        imapConfig.setMessageCount(inbox.getMessageCount()-getStartLettersToShow());
+
+        Message message = inbox.getMessage(inbox.getMessageCount()-getStartLettersToShow());
+        log.info("Saving " + getStartLettersToShow() + " last messages in DataBase");
+        try {
+            emailMessageRepo.save(new EmailMessage(((MimeMessage)message).getMessageID(), message.getSentDate()));
+            setStartLettersToShow(0);
+        }catch (Exception e){
+            return;
+        }
     }
 
     @Override
     public List<Message> getLastMessages(ImapConfig imapConfig, int mesCount) throws MessagingException {
         Folder inbox = imapConfig.getInbox();
-        if (imapConfig.isConnected() && inbox != null && inbox.isOpen()) {
+        if (mesCount < 0) throw new MessagingException("Inappropriate messages count: " + mesCount);
+        if (isConnected(imapConfig)) {
             log.info("Searching for " + mesCount + " messages of " + imapConfig.getUsername());
             List<Message> messages = new ArrayList<>();
             for (int i = 0; i < mesCount; ++i) {
@@ -62,17 +82,36 @@ public class YandexEmailConnection extends AbstractEmailConnection {
     @Override
     public int checkUpdates(ImapConfig imapConfig) throws MessagingException {
         Folder inbox = imapConfig.getInbox();
-        if (imapConfig.isConnected() && inbox != null && inbox.isOpen()) {
-
-            log.info("Checking for new massages of " + imapConfig.getUsername());
-
-            int serverMessageCount = inbox.getMessageCount();
-            int localMessageCount = imapConfig.getMessageCount();
-            imapConfig.setMessageCount(serverMessageCount);
-
-            return serverMessageCount - localMessageCount;
+        if (isConnected(imapConfig)) {
+            if (getStartLettersToShow() != 0){
+                int lettersCount = getStartLettersToShow();
+                setStartLettersToShow(0);
+                return lettersCount;
+            }
+            EmailMessage lastMessageInDB = emailMessageRepo.getTopByOrderBySendDateAsc();
+            int newMessagesCount = 0;
+            Stack<EmailMessage> messagesStack = new Stack<>();
+            int mesCount = inbox.getMessageCount();
+            while (true){
+                Message message = inbox.getMessage(mesCount--);
+                if (message.getSentDate().compareTo(lastMessageInDB.getSendDate()) >= 0){
+                    if (((MimeMessage)message).getMessageID().equals(lastMessageInDB.getImapEmailId())){
+                        break;
+                    }
+                    messagesStack.push(new EmailMessage(((MimeMessage)message).getMessageID(), message.getSentDate()));
+                }
+                else break;
+            }
+            newMessagesCount = messagesStack.size();
+            while (!messagesStack.isEmpty()){
+                try {
+                    emailMessageRepo.save(messagesStack.pop());
+                }
+                catch (Exception ignored){}
+            }
+            return newMessagesCount;
         }
-        else return -1;
+        return -1;
     }
 
     @Override
@@ -86,7 +125,6 @@ public class YandexEmailConnection extends AbstractEmailConnection {
     @Override
     public boolean isConnected(ImapConfig imapConfig) throws MessagingException {
         if (imapConfig.getInbox() != null) {
-            setStartLettersToShow(0);
             imapConfig.setConnected(imapConfig.getInbox().isOpen());
             return imapConfig.isConnected();
         }
