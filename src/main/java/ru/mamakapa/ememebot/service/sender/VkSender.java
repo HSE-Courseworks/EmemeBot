@@ -1,6 +1,5 @@
 package ru.mamakapa.ememebot.service.sender;
 
-import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
@@ -71,7 +70,7 @@ public class VkSender extends AbstractSender {
         }
     }
 
-    private void sendMessageAttachments(EmailLetter emailLetter, int recipientId) throws IOException, ClientException, ApiException, SendMessageException {
+    private void sendMessageAttachments(EmailLetter emailLetter, int recipientId) throws IOException, ClientException, ApiException {
         if(emailLetter.getHtmlFilePaths().size() !=0 || emailLetter.getAttachmentFilePaths().size() != 0){
             MessagesSendQuery message = this.getMessagesSendQuery(recipientId);
             StringBuilder attachmentStringBuilder = new StringBuilder();
@@ -93,27 +92,29 @@ public class VkSender extends AbstractSender {
             return this.vk.messages().send(this.actor).userId(peerId).randomId(random.nextInt(10000));
         }
     }
-    public String getUploadDocAttachId(File file, int peerId) throws IOException, ClientException, ApiException, JSONException, SendMessageException {
+    public String getUploadDocAttachId(File file, int peerId) throws IOException, ClientException, ApiException, JSONException {
         log.info("Uploading document in attachments");
         UploadDocQuery uploadDocQuery = vk.upload().doc(vk.docs().getMessagesUploadServer(actor).peerId(peerId).execute().
                 getUploadUrl().toString(), file);
         JSONObject jsonObject = new JSONObject(uploadDocQuery.executeAsString());
-        if(jsonObject.has("error")){
-            file = renameFile(file);
+        if (jsonObject.has("error")) {
+            String filename = file.getAbsolutePath();
+            file = renameFile(file, filename+".delete.me");
             uploadDocQuery = vk.upload().doc(vk.docs().getMessagesUploadServer(actor).peerId(peerId).execute().
                     getUploadUrl().toString(), file);
             jsonObject = new JSONObject(uploadDocQuery.executeAsString());
+            file = renameFile(file, filename);
         }
-        try{
-            JSONObject json = new JSONObject(this.vk.docs().save(this.actor, jsonObject.getString("file")).executeAsString());
-            JSONObject jsonObj = json.getJSONObject("response").getJSONObject("doc");
-            return "doc"+jsonObj.getLong("owner_id")+"_"+jsonObj.getLong("id");
-        }catch (JSONException e){
-            throw new SendMessageException();
+        if(jsonObject.has("error")){
+            log.error(file.getName() + " is not supported!");
+            return "";
         }
+        JSONObject json = new JSONObject(this.vk.docs().save(this.actor, jsonObject.getString("file")).executeAsString());
+        JSONObject jsonObj = json.getJSONObject("response").getJSONObject("doc");
+        return "doc" + jsonObj.getLong("owner_id") + "_" + jsonObj.getLong("id");
     }
-    private File renameFile(File file) throws FileNotFoundException {
-        File tempFile = new File(file.getAbsolutePath()+".delete.me");
+    private File renameFile(File file, String newName) throws FileNotFoundException {
+        File tempFile = new File(newName);
         if(!file.renameTo(tempFile)){
             throw new FileNotFoundException("Not successful renaming file...");
         }
