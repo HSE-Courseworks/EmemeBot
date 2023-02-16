@@ -102,14 +102,17 @@ public class EmailStableConnection extends AbstractEmailConnection{
             log.info("Trying to find new messages...");
             while (true){
                 Message message = inbox.getMessage(mesCount--);
-                if (message.getSentDate().compareTo(lastMessageInDB.getSendDate()) >= 0){
-                    if (((MimeMessage)message).getMessageID().equals(lastMessageInDB.getImapEmailId())){
-                        break;
-                    }
-                    log.info("Found " + ((MimeMessage) message).getMessageID());
-                    messagesStack.push(new EmailMessage(((MimeMessage)message).getMessageID(), message.getSentDate()));
+                try {
+                    if (message.getSentDate().compareTo(lastMessageInDB.getSendDate()) >= 0) {
+                        if (((MimeMessage) message).getMessageID().equals(lastMessageInDB.getImapEmailId())) {
+                            break;
+                        }
+                        log.info("Found " + ((MimeMessage) message).getMessageID());
+                        messagesStack.push(new EmailMessage(((MimeMessage) message).getMessageID(), message.getSentDate()));
+                    } else break;
+                } catch (MessageRemovedException removedException){
+                    continue;
                 }
-                else break;
             }
 
             int newMessagesCount = messagesStack.size();
