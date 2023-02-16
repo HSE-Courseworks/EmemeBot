@@ -96,26 +96,29 @@ public class EmailStableConnection extends AbstractEmailConnection{
                 setStartLettersToShow(0);
                 return resCount;
             }
-
             EmailMessage lastMessageInDB = emailMessageRepo.getTopByOrderBySendDateDesc();
             Stack<EmailMessage> messagesStack = new Stack<>();
             int mesCount = inbox.getMessageCount();
+            log.info("Trying to find new messages...");
             while (true){
                 Message message = inbox.getMessage(mesCount--);
                 if (message.getSentDate().compareTo(lastMessageInDB.getSendDate()) >= 0){
                     if (((MimeMessage)message).getMessageID().equals(lastMessageInDB.getImapEmailId())){
                         break;
                     }
+                    log.info("Found " + ((MimeMessage) message).getMessageID());
                     messagesStack.push(new EmailMessage(((MimeMessage)message).getMessageID(), message.getSentDate()));
                 }
                 else break;
             }
 
             int newMessagesCount = messagesStack.size();
+            log.info("Number of messages in stack is " + newMessagesCount);
             while (!messagesStack.isEmpty()){
                 EmailMessage emailMessage = messagesStack.pop();
                 if (!emailMessageRepo.existsByImapEmailId(emailMessage.getImapEmailId())){
-                    emailMessageRepo.save(messagesStack.pop());
+                    log.info("Saving " + emailMessage.getImapEmailId() + "in DB");
+                    emailMessageRepo.save(emailMessage);
                 }
             }
             return newMessagesCount;
