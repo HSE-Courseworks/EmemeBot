@@ -53,20 +53,20 @@ public class EmailStableConnection extends AbstractEmailConnection{
         imapConfig.setInbox(inbox);
         imapConfig.setConnected(true);
 
-        Message message = inbox.getMessage(inbox.getMessageCount()-getStartLettersToShow());
+        Message message = inbox.getMessage(inbox.getMessageCount() - getStartLettersToShow());
         log.info("Saving " + getStartLettersToShow() + " last messages in DataBase");
-        try {
-            emailMessageRepo.save(new EmailMessage(((MimeMessage)message).getMessageID(), message.getSentDate()));
+        EmailMessage firstMes = new EmailMessage(((MimeMessage) message).getMessageID(), message.getSentDate());
+        if (!emailMessageRepo.existsByImapEmailId(firstMes.getImapEmailId())) {
+            emailMessageRepo.save(firstMes);
             setStartLettersToShow(0);
-        }catch (Exception e){
-            return;
         }
     }
 
     @Override
     public List<Message> getLastMessages(ImapConfig imapConfig, int mesCount) throws MessagingException {
         Folder inbox = imapConfig.getInbox();
-        if (mesCount < 0) throw new MessagingException("Inappropriate messages count: " + mesCount);
+        if (mesCount < 0) throw new MessagingException("Exception in getLastMessages! " +
+                "Inappropriate messages' count: " + mesCount);
         if (isConnected(imapConfig)) {
             log.info("Searching for " + mesCount + " messages of " + imapConfig.getUsername());
             List<Message> messages = new ArrayList<>();
@@ -84,12 +84,20 @@ public class EmailStableConnection extends AbstractEmailConnection{
         Folder inbox = imapConfig.getInbox();
         if (isConnected(imapConfig)) {
             if (getStartLettersToShow() != 0){
-                int lettersCount = getStartLettersToShow();
+                List<Message> messages = getLastMessages(imapConfig, getStartLettersToShow());
+                for (int i = getStartLettersToShow()-1; i >= 0; --i ){
+                    Message mes = messages.get(i);
+                    EmailMessage emailMessage = new EmailMessage(((MimeMessage)mes).getMessageID(), mes.getSentDate());
+                    if (!emailMessageRepo.existsByImapEmailId(emailMessage.getImapEmailId())) {
+                        emailMessageRepo.save(emailMessage);
+                    }
+                }
+                int resCount = getStartLettersToShow();
                 setStartLettersToShow(0);
-                return lettersCount;
+                return resCount;
             }
-            EmailMessage lastMessageInDB = emailMessageRepo.getTopByOrderBySendDateAsc();
-            int newMessagesCount = 0;
+
+            EmailMessage lastMessageInDB = emailMessageRepo.getTopByOrderBySendDateDesc();
             Stack<EmailMessage> messagesStack = new Stack<>();
             int mesCount = inbox.getMessageCount();
             while (true){
@@ -102,12 +110,13 @@ public class EmailStableConnection extends AbstractEmailConnection{
                 }
                 else break;
             }
-            newMessagesCount = messagesStack.size();
+
+            int newMessagesCount = messagesStack.size();
             while (!messagesStack.isEmpty()){
-                try {
+                EmailMessage emailMessage = messagesStack.pop();
+                if (!emailMessageRepo.existsByImapEmailId(emailMessage.getImapEmailId())){
                     emailMessageRepo.save(messagesStack.pop());
                 }
-                catch (Exception ignored){}
             }
             return newMessagesCount;
         }

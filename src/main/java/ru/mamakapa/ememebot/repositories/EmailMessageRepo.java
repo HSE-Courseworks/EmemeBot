@@ -12,8 +12,9 @@ public interface EmailMessageRepo extends JpaRepository<EmailMessage, Long> {
     List<EmailMessage> getEmailMessagesByImapEmailId(String ImapEmailId);
     void deleteAllByImapEmailId(String imapEmailId);
     void deleteById(Long id);
-    EmailMessage getTopByOrderBySendDateAsc();
+    EmailMessage getTopByOrderBySendDateDesc();
 
     EmailMessage getTopByOrderByIdAsc();
+    boolean existsByImapEmailId(String imapEmailId);
 
 }

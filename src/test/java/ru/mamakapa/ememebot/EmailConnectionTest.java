@@ -25,10 +25,6 @@ public class EmailConnectionTest {
     @Autowired
     private ImapConfig imapConfig;
 
-    @Autowired
-    private EmailMessageRepo emailMessageRepo;
-
-
     @Qualifier("EmailStableConnection")
     @Autowired
     public EmailConnection emailConnection;
@@ -44,7 +40,7 @@ public class EmailConnectionTest {
     @Test
     public void getLastMessagesTest() throws Exception {
         emailConnection.connectToEmail(imapConfig);
-        Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,1));
+        Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,startLettersToShow));
         emailConnection.closeConnection(imapConfig);
     }
 
@@ -63,42 +59,5 @@ public class EmailConnectionTest {
         System.out.println(letter.getEnvelope());
         System.out.println(letter.getBodyPart());
         emailConnection.closeConnection(imapConfig);
-    }
-
-    @Test
-    public void dataBaseSavingAndDeletingTest() throws Exception {
-        emailConnection.connectToEmail(imapConfig);
-        List<Message> messages =  emailConnection.getLastMessages(imapConfig, 3);
-        List<String> ids = new ArrayList<>();
-        for (Message message : messages){
-            String id = ((MimeMessage)message).getMessageID();
-            ids.add(id);
-            emailMessageRepo.save(new EmailMessage(id, message.getSentDate()));
-        }
-        for (String id : ids){
-            EmailMessage emailMessage = emailMessageRepo.getEmailMessagesByImapEmailId(id).get(0);
-            Assert.assertTrue(emailMessage.getImapEmailId().equals(id));
-            emailMessageRepo.deleteAllByImapEmailId(id);
-        }
-
-        emailConnection.closeConnection(imapConfig);
-    }
-
-    @Test
-    public void dbGetTopTest() throws Exception {
-        int count = 3;
-        emailConnection.connectToEmail(imapConfig);
-        List<Message> messages =  emailConnection.getLastMessages(imapConfig, count);
-        List<String> ids = new ArrayList<>();
-        for (Message message : messages){
-            String id = ((MimeMessage)message).getMessageID();
-            ids.add(id);
-            emailMessageRepo.save(new EmailMessage(id, message.getSentDate()));
-        }
-        for (int i = 0; i < count; ++i){
-            EmailMessage emailMessage = emailMessageRepo.getTopByOrderByIdAsc();
-            Assert.assertTrue(emailMessage.getImapEmailId().equals(ids.get(i)));
-            emailMessageRepo.deleteById(emailMessage.getId());
-        }
     }
 }

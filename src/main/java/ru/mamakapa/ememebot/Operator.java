@@ -23,7 +23,7 @@ public class Operator {
     private EmailService emailService;
     @Autowired
     private ImapConfig imapConfig;
-    private static final int TIME_SLEEP = 120000;
+    private static final int TIME_SLEEP = 3000;
     @Value("${user.group_id}")
     private int USER_GROUP_ID;
     @Scheduled(fixedRate = TIME_SLEEP)
