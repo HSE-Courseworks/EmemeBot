@@ -23,6 +23,8 @@ import java.util.Stack;
 @Slf4j
 public class EmailStableConnection extends AbstractEmailConnection{
 
+    final private static int LAST_EMAILS_COUNT_TO_CHECK = 50;
+
     final private EmailMessageRepo emailMessageRepo;
 
     public EmailStableConnection(EmailMessageRepo emailMessageRepo) {
@@ -100,7 +102,7 @@ public class EmailStableConnection extends AbstractEmailConnection{
             Stack<EmailMessage> messagesStack = new Stack<>();
             int mesCount = inbox.getMessageCount();
             log.info("Trying to find new messages...");
-            while (true){
+            for (int i = 0; i < LAST_EMAILS_COUNT_TO_CHECK; ++i){
                 Message message = inbox.getMessage(mesCount--);
                 try {
                     if (message.getSentDate().compareTo(lastMessageInDB.getSendDate()) >= 0) {
