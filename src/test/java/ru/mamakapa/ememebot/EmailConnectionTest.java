@@ -8,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.service.email.*;
 
+import javax.mail.Message;
+import java.io.File;
+
 
 @SpringBootTest
 public class EmailConnectionTest {
@@ -42,10 +45,26 @@ public class EmailConnectionTest {
     @Test
     public void compileTest() throws Exception {
         emailService.getEmailConnection().connectToEmail(imapConfig);
-        EmailLetter letter = emailService.getEmailCompiler().constructLetter(emailService.getEmailConnection().getLastMessages(imapConfig, 1).get(0));
-        System.out.println(letter.getEnvelope());
-        System.out.println(letter.getBodyPart());
-        emailService.deleteLetter(letter);
+        Message message = imapConfig.getInbox().getMessage(4);
+        EmailLetter letter = emailService.getEmailCompiler().constructLetter(message);
+        Assert.assertEquals(letter.getEnvelope(), "От: Ememe Bot <ememebot@yandex.ru> \n" +
+                                                        "Тема: 4th Test\n" +
+                                                        "Отправленно: Thu Jan 26 17:34:00 MSK 2023\n");
+
+        Assert.assertEquals(letter.getBodyPart(), "\n" +
+                                                        "Вложение: lab01-netIntro.zip\n" +
+                                                        "Вложение: RASPISANIE_2022-2023_-_IMIKN_-_3_MODULJH_-_BAK_-_PI.xlsx\n");
+
+        for (String filePath : letter.getAttachmentFilePaths()){
+            File file = new File(filePath);
+            Assert.assertTrue(file.exists());
+        }
+        for (String filePath : letter.getHtmlFilePaths()){
+            File file = new File(filePath);
+            Assert.assertTrue(file.exists());
+        }
+
+        Assert.assertTrue(emailService.deleteLetter(letter));
         emailService.getEmailConnection().closeConnection(imapConfig);
     }
 }
