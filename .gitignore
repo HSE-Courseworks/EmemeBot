@@ -1,5 +1,6 @@
 #logs
 EmemeBotLogs.log
+*.gz
 
 #project
 src/main/resources/*

@@ -81,6 +81,21 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Default spring profile to use -->
+                <spring.profiles.active>dev</spring.profiles.active>
+                <!-- Default environment -->
+                <environment>develop</environment>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>

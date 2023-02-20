@@ -3,6 +3,7 @@ package ru.mamakapa.ememebot;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.service.email.*;
@@ -10,41 +11,41 @@ import ru.mamakapa.ememebot.service.email.*;
 
 @SpringBootTest
 public class EmailConnectionTest {
+    @Value("${mail.startLettersToShow}")
+    private int startLettersToShow;
     @Autowired
     private ImapConfig imapConfig;
 
     @Autowired
-    public EmailConnection emailConnection;
-    @Autowired
-    public EmailCompiler emailCompiler;
-
+    EmailService emailService;
     @Test
     public void connectToEmailTest() throws Exception {
-        emailConnection.connectToEmail(imapConfig);
-        emailConnection.closeConnection(imapConfig);
+        emailService.getEmailConnection().connectToEmail(imapConfig);
+        emailService.getEmailConnection().closeConnection(imapConfig);
     }
 
     @Test
     public void getLastMessagesTest() throws Exception {
-        emailConnection.connectToEmail(imapConfig);
-        Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,1));
-        emailConnection.closeConnection(imapConfig);
+        emailService.getEmailConnection().connectToEmail(imapConfig);
+        Assert.assertNotNull(emailService.getEmailConnection().getLastMessages(imapConfig,5));
+        emailService.getEmailConnection().closeConnection(imapConfig);
     }
 
     @Test
     public void checkUpdates() throws Exception {
-        emailConnection.connectToEmail(imapConfig);
-        int n = emailConnection.checkUpdates(imapConfig);
-        emailConnection.closeConnection(imapConfig);
-        Assert.assertNotSame(0, n);
+        emailService.getEmailConnection().connectToEmail(imapConfig);
+        int n = emailService.getEmailConnection().checkUpdates(imapConfig);
+        emailService.getEmailConnection().closeConnection(imapConfig);
+        Assert.assertNotSame(startLettersToShow, n);
     }
 
     @Test
     public void compileTest() throws Exception {
-        emailConnection.connectToEmail(imapConfig);
-        EmailLetter letter = emailCompiler.constructLetter(emailConnection.getLastMessages(imapConfig, 1).get(0));
+        emailService.getEmailConnection().connectToEmail(imapConfig);
+        EmailLetter letter = emailService.getEmailCompiler().constructLetter(emailService.getEmailConnection().getLastMessages(imapConfig, 1).get(0));
         System.out.println(letter.getEnvelope());
         System.out.println(letter.getBodyPart());
-        emailConnection.closeConnection(imapConfig);
+        emailService.deleteLetter(letter);
+        emailService.getEmailConnection().closeConnection(imapConfig);
     }
 }
