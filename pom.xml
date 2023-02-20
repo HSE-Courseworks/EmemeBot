@@ -83,13 +83,13 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>spring-profile</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <!-- Default spring profile to use -->
-                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.profiles.active>test</spring.profiles.active>
                 <!-- Default environment -->
                 <environment>develop</environment>
             </properties>

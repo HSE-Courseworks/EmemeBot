@@ -4,6 +4,7 @@ EmemeBotLogs.log
 
 #project
 src/main/resources/*
+!src/main/resources/application-test.properties
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar

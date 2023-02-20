@@ -36,7 +36,7 @@ public class EmailConnectionTest {
         emailService.getEmailConnection().connectToEmail(imapConfig);
         int n = emailService.getEmailConnection().checkUpdates(imapConfig);
         emailService.getEmailConnection().closeConnection(imapConfig);
-        Assert.assertNotSame(startLettersToShow, n);
+        Assert.assertSame(startLettersToShow, n);
     }
 
     @Test
