@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 @SpringBootTest()
-public class VkSenderTest {
+public class SenderTest {
 
     @Autowired Sender sender;
     @Test
