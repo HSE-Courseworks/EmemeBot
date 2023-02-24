@@ -19,7 +19,7 @@ public class SenderTest {
                 File.separator + "src" + File.separator + "main" + File.separator + "resources" +
                 File.separator + "attachments" + File.separator;
         sender.sendMessage(EmailLetter.builder().
-                htmlFilePaths(List.of(folderPath+"photo_2022-12-17_16-02-24.jpg")).
+                htmlFilePaths(List.of()).
                 attachmentFilePaths(List.of(folderPath+"SceneBuilder.exe.delete.me")).
                         envelope("HI").bodyPart("bp").build(),
                 623783153);
