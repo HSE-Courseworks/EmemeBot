@@ -69,8 +69,8 @@ public class YandexEmailCompiler extends AbstractEmailCompiler{
                 String content = (String) p.getContent();
                 if (p.isMimeType("text/html")){
                     content = processHtml(content);
+                    bodyPart.append(content).append("\n");
                 }
-                bodyPart.append(content).append("\n");
             }catch (Exception e){
                 bodyPart.append("Извините, я не могу обработать эту часть письма :(\n");
             }
