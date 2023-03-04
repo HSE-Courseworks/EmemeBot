@@ -12,6 +12,7 @@ import ru.mamakapa.ememebot.service.email.EmailService;
 import ru.mamakapa.ememebot.service.sender.Sender;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import java.util.List;
 @Service
 @Getter
@@ -48,8 +49,8 @@ public class Operator {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (MessagingException e) {
+                log.info("Exception!" + e.getMessage());
             }
         } catch (Exception e) {
             System.out.println("Error connect! With exception: " + e.getMessage());

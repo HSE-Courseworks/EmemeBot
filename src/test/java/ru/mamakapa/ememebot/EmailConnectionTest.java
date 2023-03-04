@@ -3,13 +3,20 @@ package ru.mamakapa.ememebot;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
+import ru.mamakapa.ememebot.entities.EmailMessage;
+import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
 import ru.mamakapa.ememebot.service.email.*;
 
 import javax.mail.Message;
 import java.io.File;
+import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SpringBootTest
@@ -19,6 +26,7 @@ public class EmailConnectionTest {
     @Autowired
     private ImapConfig imapConfig;
 
+    @Qualifier("EmailStableConnection")
     @Autowired
     EmailService emailService;
     @Test
