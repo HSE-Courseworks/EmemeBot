@@ -1,15 +1,15 @@
 <configuration>
 
-    <property name="HOME_LOG" value="/var/log/ru.mamakapa.ememebot/ememebot.log"/>
+    <property name="HOME_LOG" value="./logs"/>
 
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/proj3ct.io/tg-simple-bot/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>./LogArchives/logArchive.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
-            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <!-- total size of all archive files, if total size > 1GB, it will delete old archived file -->
             <totalSizeCap>1GB</totalSizeCap>
             <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
