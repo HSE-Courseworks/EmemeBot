@@ -26,7 +26,6 @@ public class EmailConnectionTest {
     @Autowired
     private ImapConfig imapConfig;
 
-    @Qualifier("EmailStableConnection")
     @Autowired
     EmailService emailService;
     @Test
