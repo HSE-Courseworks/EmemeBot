@@ -3,16 +3,29 @@ package ru.mamakapa.ememebot;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememebot.config.ImapConfig;
+import ru.mamakapa.ememebot.entities.EmailMessage;
+import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
 import ru.mamakapa.ememebot.service.email.*;
+
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SpringBootTest
 public class EmailConnectionTest {
+
+    @Value("${mail.startLettersToShow}")
+    private int startLettersToShow;
     @Autowired
     private ImapConfig imapConfig;
 
+    @Qualifier("EmailStableConnection")
     @Autowired
     public EmailConnection emailConnection;
     @Autowired
@@ -27,7 +40,7 @@ public class EmailConnectionTest {
     @Test
     public void getLastMessagesTest() throws Exception {
         emailConnection.connectToEmail(imapConfig);
-        Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,1));
+        Assert.assertNotNull(emailConnection.getLastMessages(imapConfig,startLettersToShow));
         emailConnection.closeConnection(imapConfig);
     }
 
@@ -36,7 +49,7 @@ public class EmailConnectionTest {
         emailConnection.connectToEmail(imapConfig);
         int n = emailConnection.checkUpdates(imapConfig);
         emailConnection.closeConnection(imapConfig);
-        Assert.assertNotSame(0, n);
+        Assert.assertEquals(startLettersToShow, n);
     }
 
     @Test

@@ -3,8 +3,10 @@ package ru.mamakapa.ememebot.service.email;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.config.ImapConfig;
+import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
 
 import javax.mail.*;
 import java.util.ArrayList;
@@ -14,7 +16,6 @@ import java.util.Properties;
 @Getter
 @Setter
 @Slf4j
-@Service
 public class YandexEmailConnection extends AbstractEmailConnection {
 
     @Override
