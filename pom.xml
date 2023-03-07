@@ -91,21 +91,6 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>spring-profile</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!-- Default spring profile to use -->
-                <spring.profiles.active>test</spring.profiles.active>
-                <!-- Default environment -->
-                <environment>develop</environment>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
