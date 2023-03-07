@@ -12,6 +12,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=testdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db/EmemeBot
+      - MAIL_STARTLETTERSCOUNT=1
     networks:
       - ememebot-network
 
