@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.entities.EmailMessage;
 import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
@@ -20,13 +21,14 @@ import java.util.List;
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class EmailConnectionTest {
     @Value("${mail.startLettersToShow}")
     private int startLettersToShow;
     @Autowired
     private ImapConfig imapConfig;
 
-    @Qualifier("EmailStableConnection")
+
     @Autowired
     EmailService emailService;
     @Test
