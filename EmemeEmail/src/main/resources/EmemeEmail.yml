@@ -1,0 +1,230 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /registerChat/{messengerType}/{chatId}:
+    post:
+      tags:
+        - chat-registrar-controller
+      summary: Register new user by chatId from tg or vk messengers specified in the path
+      operationId: registerChat
+      parameters:
+        - name: messengerType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User has been registered
+        '400':
+          description: Inappropriate request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      tags:
+        - chat-registrar-controller
+      summary: Delete user by chatId from tg or vk messengers specified in the path
+      operationId: deleteChat
+      parameters:
+        - name: messengerType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User has been deleted
+        '400':
+          description: Inappropriate request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: This user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /emails:
+    get:
+      tags:
+        - email-controller
+      summary: Get all emails which are subscribed by user with chatId from request parameters
+      operationId: getAllUserEmails
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Emails has been received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllEmailsResponse'
+        '400':
+          description: Inappropriate request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: This email or user do not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    post:
+      tags:
+        - email-controller
+      summary: Add new email to subscription of user with chatId from request parameters
+      operationId: addNewEmail
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddNewEmailRequest'
+        required: true
+      responses:
+        '200':
+          description: Email has been subscribed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+        '400':
+          description: Inappropriate request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: This user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      tags:
+        - email-controller
+      summary: Delete existing email which is subscribed by user with chatId from request parameters
+      operationId: deleteEmail
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteEmailRequest'
+        required: true
+      responses:
+        '200':
+          description: Email has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+        '400':
+          description: Inappropriate request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: This email or user do not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+components:
+  schemas:
+    ApiErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        stackTrace:
+          type: array
+          items:
+            type: string
+    AddNewEmailRequest:
+      required:
+        - address
+        - appPassword
+        - host
+      type: object
+      properties:
+        address:
+          type: string
+        appPassword:
+          type: string
+        host:
+          type: string
+    EmailResponse:
+      required:
+        - address
+        - appPassword
+        - host
+      type: object
+      properties:
+        address:
+          type: string
+        appPassword:
+          type: string
+        host:
+          type: string
+    AllEmailsResponse:
+      type: object
+      properties:
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailResponse'
+        size:
+          type: integer
+          format: int32
+    DeleteEmailRequest:
+      required:
+        - address
+      type: object
+      properties:
+        address:
+          type: string
