@@ -3,27 +3,16 @@ package ru.mamakapa.ememeemail.services.connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeemail.entities.ImapEmail;
-import ru.mamakapa.ememeemail.services.ImapEmailService;
-import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 
 import javax.mail.*;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 
 @Slf4j
 @Service
 public class EmailConnectionImpl implements EmailConnection {
 
-    final ImapEmailService emailService;
-
-    private static final int LAST_MESSAGES_TO_CHECK_COUNT = 15;
-
     Map<String, Store> loginConnections = new HashMap<>();
-
-    public EmailConnectionImpl(ImapEmailService emailService) {
-        this.emailService = emailService;
-    }
 
     @Override
     public void connect(ImapEmail email) throws MessagingException {
@@ -39,14 +28,11 @@ public class EmailConnectionImpl implements EmailConnection {
         Store store = Session.getInstance(prop).getStore();
         store.connect(email.getHost(), email.getEmail(), email.getAppPassword());
 
-        log.info("Connected. Opening inbox folder");
+        log.info("Connected");
 
-        Folder inbox = store.getFolder("INBOX");
-        inbox.open(Folder.READ_ONLY);
-        loginConnections.put(email.getEmail(), store);
-
-        email.setLastChecked(Timestamp.from(Instant.now()));
-        emailService.patch(email);
+        if (!loginConnections.containsKey(email.getEmail())){
+            loginConnections.put(email.getEmail(), store);
+        }
     }
 
     @Override
@@ -66,11 +52,6 @@ public class EmailConnectionImpl implements EmailConnection {
                     newMessages.add(messages.get(i));
                 }
             }
-            if (!newMessages.isEmpty()) {
-                var lastMessageSentDate = newMessages.get(newMessages.size() - 1).getSentDate();
-                email.setLastMessageTime(getTimestampFromDate(lastMessageSentDate));
-                emailService.patch(email);
-            }
             return Optional.of(newMessages);
         }
         return Optional.empty();
@@ -81,6 +62,7 @@ public class EmailConnectionImpl implements EmailConnection {
         if (isConnected(email)) {
             var store = loginConnections.get(email.getEmail());
             var inbox = store.getFolder("INBOX");
+            inbox.open(Folder.READ_ONLY);
             var inboxMessageCount = inbox.getMessageCount();
             ArrayList<Message> messages = new ArrayList<>();
             for (int i = 0; i < count; ++i){
@@ -89,6 +71,23 @@ public class EmailConnectionImpl implements EmailConnection {
             return Optional.of(messages);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<Message> getMessageByNumber(ImapEmail email, int n) throws MessagingException {
+        if (isConnected(email)){
+            var store = loginConnections.get(email.getEmail());
+            var inbox = store.getFolder("INBOX");
+            inbox.open(Folder.READ_ONLY);
+            return Optional.of(inbox.getMessage(n));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void closeConnection(ImapEmail email) throws MessagingException {
+        var store = loginConnections.get(email.getEmail());
+        store.close();
     }
 
     private boolean isNewMessage(Date messageSentDate, Timestamp lastMessageTime){

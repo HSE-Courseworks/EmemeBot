@@ -8,4 +8,6 @@ import java.io.IOException;
 
 public interface Compiler {
     EmailLetter compile(Message message) throws MessagingException, IOException;
+
+    void deleteLetterFiles(EmailLetter letter);
 }

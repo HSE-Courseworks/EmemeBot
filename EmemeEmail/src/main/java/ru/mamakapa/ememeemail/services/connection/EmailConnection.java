@@ -4,14 +4,12 @@ import ru.mamakapa.ememeemail.entities.ImapEmail;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Store;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-public interface EmailConnection {
+public interface EmailConnection{
+
+    int LAST_MESSAGES_TO_CHECK_COUNT = 15;
 
     void connect(ImapEmail email) throws MessagingException;
 
@@ -20,5 +18,9 @@ public interface EmailConnection {
     Optional<List<Message>> getNewLetters(ImapEmail email) throws MessagingException;
 
     Optional<List<Message>> getLastMessagesByCount(ImapEmail email, int count) throws MessagingException;
+
+    Optional<Message> getMessageByNumber(ImapEmail email, int n) throws MessagingException;
+
+    void closeConnection(ImapEmail email) throws MessagingException;
 
 }

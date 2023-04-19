@@ -33,7 +33,7 @@ public class HtmlTextProcessor extends AbstractPartProcessor{
     }
 
     private File tryToSaveImage(String html) throws IOException {
-        String filePath = SAVING_PATH + Instant.now().toString() + ".png";
+        String filePath = SAVING_PATH + File.separator + Instant.now().toString() + ".png";
         try {
             return HtmlService.saveHtmlAsImage(html, filePath);
         } catch (Exception ex) {

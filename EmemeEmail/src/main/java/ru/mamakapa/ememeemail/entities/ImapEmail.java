@@ -1,20 +1,20 @@
 package ru.mamakapa.ememeemail.entities;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImapEmail {
-    Long id;
-    Long botId;
-    String email;
-    String appPassword;
-    String host;
-    Timestamp lastChecked;
-    Timestamp lastMessageTime;
+    private Long id;
+    private Long botId;
+    private String email;
+    private String appPassword;
+    private String host;
+    private Timestamp lastChecked;
+    private Timestamp lastMessageTime;
 }

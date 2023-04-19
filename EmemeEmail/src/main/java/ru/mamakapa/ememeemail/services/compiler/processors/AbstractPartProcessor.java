@@ -16,9 +16,8 @@ public abstract class AbstractPartProcessor {
     protected final static Path SAVING_PATH = new File(".").toPath()
             .toAbsolutePath()
             .getParent()
-            .getParent()
-            .getParent()
-            .getParent()
+            .resolve("src")
+            .resolve("main")
             .resolve("resources")
             .resolve("savedir");
 

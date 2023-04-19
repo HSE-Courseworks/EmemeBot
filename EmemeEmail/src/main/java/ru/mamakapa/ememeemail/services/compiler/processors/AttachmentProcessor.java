@@ -37,14 +37,13 @@ public class AttachmentProcessor extends AbstractPartProcessor{
         if (fileName == null) {
             fileName = "NoNameAttachment" + Instant.now().toString();
         }
-        File file = new File(fileName);
+        String filepath = SAVING_PATH + File.separator + Translit.cyrillicToLatin(fileName);
+        File file = new File(filepath);
         if (!file.exists()) {
             log.info("Saving attachment " + fileName);
-            String linkFile = SAVING_PATH + Translit.cyrillicToLatin(fileName);
-            ((MimeBodyPart) message).saveFile(linkFile);
+            ((MimeBodyPart) message).saveFile(filepath);
             log.info(fileName + " saved!");
-            return file;
         }
-        else throw new MessagingException("File does not exist");
+        return file;
     }
 }

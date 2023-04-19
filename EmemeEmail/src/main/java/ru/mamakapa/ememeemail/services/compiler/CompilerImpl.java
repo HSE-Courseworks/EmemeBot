@@ -45,6 +45,18 @@ public class CompilerImpl implements Compiler{
         return letter;
     }
 
+    @Override
+    public void deleteLetterFiles(EmailLetter letter) {
+        log.info("Deleting files");
+        for (var f : letter.getFiles()){
+            if (f.exists()) {
+                log.info("deleting " + f.getName());
+                f.delete();
+                log.info("file deleted");
+            }
+        }
+    }
+
     public String compileEnvelope(Message message) throws MessagingException {
         StringBuilder envelope = new StringBuilder();
         Address[] addresses;
@@ -74,7 +86,7 @@ public class CompilerImpl implements Compiler{
             }
             case AttachmentPart attachmentPart -> {
                 letter.getFiles().add(attachmentPart.file());
-                bodyPartOfLetter.append("Вложение: ").append(attachmentPart.file().getName());
+                bodyPartOfLetter.append("Вложение: ").append(attachmentPart.file().getName()).append("\n");
             }
             case default -> log.info("Message part that cannot be processed");
         }
