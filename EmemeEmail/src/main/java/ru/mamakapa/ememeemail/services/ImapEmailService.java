@@ -5,12 +5,12 @@ import ru.mamakapa.ememeemail.entities.ImapEmail;
 import java.util.List;
 
 public interface ImapEmailService {
-    List<ImapEmail> getAllEmailsByBotId(Long userId);
+    List<ImapEmail> getAllEmailsForChatId(Long chatId);
 
     ImapEmail add(Long chatId, String email, String password, String host);
 
     ImapEmail remove(Long chatId, String email);
 
-    ImapEmail patch(ImapEmail emailWithUpdates);
+    void patch(ImapEmail emailWithUpdates);
 
 }

@@ -7,10 +7,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 import ru.mamakapa.ememeemail.DTOs.responses.ApiErrorResponse;
+import ru.mamakapa.ememeemail.services.BotUserService;
 
 @RestController
 @RequestMapping("/registerChat")
 public class ChatRegistrarController {
+
+    final BotUserService botUserService;
+
+    public ChatRegistrarController(BotUserService botUserService) {
+        this.botUserService = botUserService;
+    }
 
     @Operation(summary = "Register new user by chatId from tg or vk messengers specified in the path")
     @ApiResponses(value = {
@@ -21,7 +28,7 @@ public class ChatRegistrarController {
     })
     @PostMapping("/{messengerType}/{chatId}")
     public void registerChat(@PathVariable String messengerType, @PathVariable Long chatId){
-
+        botUserService.register(chatId);
     }
 
     @Operation(summary = "Delete user by chatId from tg or vk messengers specified in the path")
@@ -36,6 +43,6 @@ public class ChatRegistrarController {
     })
     @DeleteMapping("/{messengerType}/{chatId}")
     public void deleteChat(@PathVariable String messengerType, @PathVariable Long chatId){
-
+        botUserService.delete(chatId);
     }
 }

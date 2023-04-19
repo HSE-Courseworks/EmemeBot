@@ -12,10 +12,19 @@ import ru.mamakapa.ememeemail.DTOs.requests.DeleteEmailRequest;
 import ru.mamakapa.ememeemail.DTOs.responses.AllEmailsResponse;
 import ru.mamakapa.ememeemail.DTOs.responses.ApiErrorResponse;
 import ru.mamakapa.ememeemail.DTOs.responses.EmailResponse;
+import ru.mamakapa.ememeemail.services.ImapEmailService;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/emails")
 public class EmailController {
+
+    final ImapEmailService imapEmailService;
+
+    public EmailController(ImapEmailService imapEmailService) {
+        this.imapEmailService = imapEmailService;
+    }
 
     @Operation(summary = "Add new email to subscription of user with chatId from request parameters")
     @ApiResponses(value = {
@@ -30,9 +39,15 @@ public class EmailController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @PostMapping()
-    public EmailResponse addNewEmail(@RequestParam(required = true) String id,
+    public EmailResponse addNewEmail(@RequestParam(required = true) long chatId,
                                      @RequestBody @Valid AddNewEmailRequest addNewLinkRequest){
-        return new EmailResponse(null, null, null);
+        var imapEmail = imapEmailService.add(chatId,
+                addNewLinkRequest.address(), addNewLinkRequest.appPassword(), addNewLinkRequest.host());
+        return EmailResponse.builder()
+                .address(imapEmail.getEmail())
+                .appPassword(imapEmail.getAppPassword())
+                .host(imapEmail.getHost())
+                .build();
     }
 
     @Operation(summary = "Delete existing email which is subscribed by user with chatId from request parameters")
@@ -49,9 +64,14 @@ public class EmailController {
     }
     )
     @DeleteMapping()
-    public EmailResponse deleteEmail(@RequestParam(required = true) String id,
+    public EmailResponse deleteEmail(@RequestParam(required = true) long chatId,
                                      @RequestBody @Valid DeleteEmailRequest deleteEmailRequest){
-        return new EmailResponse(null, null, null);
+        var imapEmail = imapEmailService.remove(chatId, deleteEmailRequest.address());
+        return EmailResponse.builder()
+                .address(imapEmail.getEmail())
+                .host(imapEmail.getHost())
+                .appPassword(imapEmail.getAppPassword())
+                .build();
     }
 
     @Operation(summary = "Get all emails which are subscribed by user with chatId from request parameters")
@@ -67,7 +87,10 @@ public class EmailController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @GetMapping()
-    public AllEmailsResponse getAllUserEmails(@RequestParam(required = true) String id){
-        return new AllEmailsResponse(null, null);
+    public AllEmailsResponse getAllUserEmails(@RequestParam(required = true) long chatId){
+        var emails = imapEmailService.getAllEmailsForChatId(chatId).stream()
+                .map(e -> new EmailResponse(e.getEmail(), e.getAppPassword(), e.getHost()))
+                .toList();
+        return new AllEmailsResponse(emails);
     }
 }
