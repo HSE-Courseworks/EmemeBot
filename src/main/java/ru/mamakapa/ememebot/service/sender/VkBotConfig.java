@@ -3,11 +3,6 @@ package ru.mamakapa.ememebot.service.sender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 @Component
 @PropertySource("application.properties")
 public class VkBotConfig extends BotConfig{

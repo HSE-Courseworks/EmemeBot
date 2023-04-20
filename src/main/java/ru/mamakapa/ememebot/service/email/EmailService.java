@@ -3,6 +3,7 @@ package ru.mamakapa.ememebot.service.email;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,7 +16,7 @@ public class EmailService {
     final private EmailCompiler emailCompiler;
     final private EmailConnection emailConnection;
 
-    public EmailService(EmailCompiler emailCompiler, EmailConnection emailConnection) {
+    public EmailService(EmailCompiler emailCompiler, @Qualifier("EmailStableConnection") EmailConnection emailConnection) {
         this.emailCompiler = emailCompiler;
         this.emailConnection = emailConnection;
     }

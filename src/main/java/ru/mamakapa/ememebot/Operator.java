@@ -3,7 +3,6 @@ package ru.mamakapa.ememebot;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,22 +10,21 @@ import ru.mamakapa.ememebot.config.ImapConfig;
 import ru.mamakapa.ememebot.service.email.EmailLetter;
 import ru.mamakapa.ememebot.service.email.EmailService;
 import ru.mamakapa.ememebot.service.sender.Sender;
+
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import java.util.List;
 @Service
 @Getter
 @Slf4j
 public class Operator {
     @Autowired
-    //Use exactly "telegram" sender
-    //if you want to use vkontakte you must write instead it: "vk"
-    @Qualifier("telegram")
     private Sender sender;
     @Autowired
     private EmailService emailService;
     @Autowired
     private ImapConfig imapConfig;
-    private static final int TIME_SLEEP = 3000;
+    private static final int TIME_SLEEP = 120000;
     @Value("${user.group_id}")
     private int USER_GROUP_ID;
     @Scheduled(fixedRate = TIME_SLEEP)
@@ -34,7 +32,7 @@ public class Operator {
     public void run(){
         try {
             log.info("I'm listening...");
-            if (!imapConfig.isConnected()) emailService.getEmailConnection().connectToEmail(imapConfig);
+            if (!emailService.getEmailConnection().isConnected(imapConfig)) emailService.getEmailConnection().connectToEmail(imapConfig);
             List<Message> messages;
             try {
                 messages = emailService.getEmailConnection().getLastMessages(imapConfig,
@@ -51,8 +49,8 @@ public class Operator {
                         }
                     }
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (MessagingException e) {
+                log.info("Exception!" + e.getMessage());
             }
         } catch (Exception e) {
             System.out.println("Error connect! With exception: " + e.getMessage());

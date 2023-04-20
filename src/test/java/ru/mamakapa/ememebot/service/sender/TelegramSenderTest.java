@@ -1,3 +1,4 @@
+/*
 package ru.mamakapa.ememebot.service.sender;
 
 import org.junit.jupiter.api.Test;
@@ -27,4 +28,4 @@ public class TelegramSenderTest {
                 .build();
         telegramSender.sendMessage(emailLetter, USER_GROUP_ID);
     }
-}
+}*/

@@ -3,8 +3,10 @@ package ru.mamakapa.ememebot.service.email;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememebot.config.ImapConfig;
+import ru.mamakapa.ememebot.repositories.EmailMessageRepo;
 
 import javax.mail.*;
 import java.util.ArrayList;
@@ -14,8 +16,8 @@ import java.util.Properties;
 @Getter
 @Setter
 @Slf4j
-@Service
 public class YandexEmailConnection extends AbstractEmailConnection {
+
     @Override
     public void connectToEmail(ImapConfig imapConfig) throws Exception {
         Properties prop = new Properties();
@@ -39,7 +41,7 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.setStore(store);
         imapConfig.setInbox(inbox);
         imapConfig.setConnected(true);
-        imapConfig.setMessageCount(inbox.getMessageCount()-1);
+        imapConfig.setMessageCount(inbox.getMessageCount()-getStartLettersToShow());
     }
 
     @Override
@@ -79,5 +81,15 @@ public class YandexEmailConnection extends AbstractEmailConnection {
         imapConfig.getInbox().close(false);
         imapConfig.getStore().close();
         imapConfig.setConnected(false);
+    }
+
+    @Override
+    public boolean isConnected(ImapConfig imapConfig) throws MessagingException {
+        if (imapConfig.getInbox() != null) {
+            setStartLettersToShow(0);
+            imapConfig.setConnected(imapConfig.getInbox().isOpen());
+            return imapConfig.isConnected();
+        }
+        else return false;
     }
 }

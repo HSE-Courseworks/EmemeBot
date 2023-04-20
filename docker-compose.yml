@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  ememebot:
+    container_name: ememebot
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres_db
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+      - SPRING_DATASOURCE_PASSWORD=testdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db/EmemeBot
+      - MAIL_STARTLETTERSCOUNT=1
+    networks:
+      - ememebot-network
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=EmemeBot
+    volumes:
+      - ememe_db_data:/var/lib/postgresql/data
+    networks:
+      - ememebot-network
+
+volumes:
+  ememe_db_data:
+    name: ememe_db_data
+
+networks:
+  ememebot-network:
+    driver: bridge
