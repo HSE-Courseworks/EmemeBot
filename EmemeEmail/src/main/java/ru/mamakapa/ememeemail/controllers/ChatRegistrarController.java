@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
+import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
 import ru.mamakapa.ememeemail.DTOs.responses.ApiErrorResponse;
 import ru.mamakapa.ememeemail.services.BotUserService;
 
@@ -27,7 +28,7 @@ public class ChatRegistrarController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @PostMapping("/{messengerType}/{chatId}")
-    public void registerChat(@PathVariable String messengerType, @PathVariable Long chatId){
+    public void registerChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
         botUserService.register(chatId);
     }
 
@@ -42,7 +43,7 @@ public class ChatRegistrarController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @DeleteMapping("/{messengerType}/{chatId}")
-    public void deleteChat(@PathVariable String messengerType, @PathVariable Long chatId){
+    public void deleteChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
         botUserService.delete(chatId);
     }
 }

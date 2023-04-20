@@ -18,6 +18,9 @@ paths:
           required: true
           schema:
             type: string
+            enum:
+              - VK
+              - TG
         - name: chatId
           in: path
           required: true
@@ -50,6 +53,9 @@ paths:
           required: true
           schema:
             type: string
+            enum:
+              - VK
+              - TG
         - name: chatId
           in: path
           required: true
@@ -78,11 +84,20 @@ paths:
       summary: Get all emails which are subscribed by user with chatId from request parameters
       operationId: getAllUserEmails
       parameters:
-        - name: id
+        - name: messengerType
           in: query
           required: true
           schema:
             type: string
+            enum:
+              - VK
+              - TG
+        - name: chatId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Emails has been received
@@ -108,11 +123,20 @@ paths:
       summary: Add new email to subscription of user with chatId from request parameters
       operationId: addNewEmail
       parameters:
-        - name: id
+        - name: messengerType
           in: query
           required: true
           schema:
             type: string
+            enum:
+              - VK
+              - TG
+        - name: chatId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -144,11 +168,20 @@ paths:
       summary: Delete existing email which is subscribed by user with chatId from request parameters
       operationId: deleteEmail
       parameters:
-        - name: id
+        - name: messengerType
           in: query
           required: true
           schema:
             type: string
+            enum:
+              - VK
+              - TG
+        - name: chatId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -218,9 +251,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailResponse'
-        size:
-          type: integer
-          format: int32
     DeleteEmailRequest:
       required:
         - address

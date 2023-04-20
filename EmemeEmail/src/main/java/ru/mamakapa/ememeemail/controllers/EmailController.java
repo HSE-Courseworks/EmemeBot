@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.mamakapa.ememeemail.DTOs.requests.AddNewEmailRequest;
 import ru.mamakapa.ememeemail.DTOs.requests.DeleteEmailRequest;
+import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
 import ru.mamakapa.ememeemail.DTOs.responses.AllEmailsResponse;
 import ru.mamakapa.ememeemail.DTOs.responses.ApiErrorResponse;
 import ru.mamakapa.ememeemail.DTOs.responses.EmailResponse;
@@ -39,7 +40,8 @@ public class EmailController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @PostMapping()
-    public EmailResponse addNewEmail(@RequestParam(required = true) long chatId,
+    public EmailResponse addNewEmail(@RequestParam(required = true) MessengerType messengerType,
+                                     @RequestParam(required = true) long chatId,
                                      @RequestBody @Valid AddNewEmailRequest addNewLinkRequest){
         var imapEmail = imapEmailService.add(chatId,
                 addNewLinkRequest.address(), addNewLinkRequest.appPassword(), addNewLinkRequest.host());
@@ -64,7 +66,8 @@ public class EmailController {
     }
     )
     @DeleteMapping()
-    public EmailResponse deleteEmail(@RequestParam(required = true) long chatId,
+    public EmailResponse deleteEmail(@RequestParam(required = true) MessengerType messengerType,
+                                     @RequestParam(required = true) long chatId,
                                      @RequestBody @Valid DeleteEmailRequest deleteEmailRequest){
         var imapEmail = imapEmailService.remove(chatId, deleteEmailRequest.address());
         return EmailResponse.builder()
@@ -87,7 +90,8 @@ public class EmailController {
                             schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @GetMapping()
-    public AllEmailsResponse getAllUserEmails(@RequestParam(required = true) long chatId){
+    public AllEmailsResponse getAllUserEmails(@RequestParam(required = true) MessengerType messengerType,
+                                              @RequestParam(required = true) long chatId){
         var emails = imapEmailService.getAllEmailsForChatId(chatId).stream()
                 .map(e -> new EmailResponse(e.getEmail(), e.getAppPassword(), e.getHost()))
                 .toList();
