@@ -1,0 +1,6 @@
+server:
+  port: 9090
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui"
