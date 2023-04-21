@@ -4,3 +4,12 @@ server:
 springdoc:
   swagger-ui:
     path: "/swagger-ui"
+
+vk:
+  bot:
+    config:
+      token: ${BOT_TOKEN}
+      groupId: 220038078
+      callback:
+        confirmationCode: ${SERVER_RESPONSE}
+        secret: ${SECRET}
