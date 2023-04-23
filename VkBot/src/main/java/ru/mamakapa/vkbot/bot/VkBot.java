@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
+import ru.mamakapa.vkbot.bot.command.HelpCommand;
 import ru.mamakapa.vkbot.bot.command.StartCommand;
 import ru.mamakapa.vkbot.bot.data.VkRecipient;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
@@ -41,7 +42,8 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
         };
         this.commandHandler = new CommandHandler<>(
                 List.of(
-                        new StartCommand(ememeBotFunctionality, this)
+                        new StartCommand(ememeBotFunctionality, this),
+                        new HelpCommand(this)
                 ), Message::getText
         );
     }
