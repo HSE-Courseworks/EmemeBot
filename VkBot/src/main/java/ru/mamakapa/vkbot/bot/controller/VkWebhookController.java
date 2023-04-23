@@ -1,4 +1,4 @@
-package ru.mamakapa.vkbot.bot;
+package ru.mamakapa.vkbot.bot.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
