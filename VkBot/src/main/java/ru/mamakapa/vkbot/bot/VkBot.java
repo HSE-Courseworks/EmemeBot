@@ -7,6 +7,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 import org.springframework.stereotype.Service;
+import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
 import ru.mamakapa.vkbot.bot.command.StartCommand;
@@ -25,13 +26,9 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     private final GroupActor groupActor;
     private final CallbackHandler callbackHandler;
     private final Random random = new Random();
-    private final CommandHandler<Message> commandHandler = new CommandHandler<>(
-            List.of(
-                    new StartCommand()
-            ), Message::getText
-    );
+    private final CommandHandler<Message> commandHandler;
 
-    public VkBot(VkBotConfig config) {
+    public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
         this.vkApiClient = new VkApiClient(new HttpTransportClient());
         this.groupActor = new GroupActor(config.groupId(), config.token());
         this.callbackHandler = new CallbackHandler(config.callback().confirmationCode(), config.callback().secret()) {
@@ -42,6 +39,11 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
                 }catch (NonHandleCommandException ignored){}
             }
         };
+        this.commandHandler = new CommandHandler<>(
+                List.of(
+                        new StartCommand(ememeBotFunctionality, this)
+                ), Message::getText
+        );
     }
     @Override
     public String handle(String update) {
