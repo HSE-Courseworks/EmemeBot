@@ -9,6 +9,7 @@
 <packaging>pom</packaging>
     <modules>
         <module>VkBot</module>
+        <module>EmemeSenderFunctionality</module>
     </modules>
 
     <properties>
