@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
+import ru.mamakapa.vkbot.bot.command.AddEmailCommand;
 import ru.mamakapa.vkbot.bot.command.HelpCommand;
 import ru.mamakapa.vkbot.bot.command.StartCommand;
+import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
+import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
 import ru.mamakapa.vkbot.bot.data.VkRecipient;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
 import ru.mamakapa.vkbot.config.VkBotConfig;
@@ -28,6 +31,7 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     private final CallbackHandler callbackHandler;
     private final Random random = new Random();
     private final CommandHandler<Message> commandHandler;
+    private final CommandHandler<Message> replayedCommandHandler;
     private final Keyboard commandButtonsKeyboard;
 
     public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
@@ -37,6 +41,7 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
             @Override
             protected void messageNew(Integer groupId, Message message) {
                 try{
+                    handleReplayedMessage(message);
                     commandHandler.handle(message);
                 }catch (NonHandleCommandException ignored){}
             }
@@ -44,8 +49,16 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
         this.commandHandler = new CommandHandler<>(
                 List.of(
                         new StartCommand(ememeBotFunctionality, this),
-                        new HelpCommand(this)
+                        new HelpCommand(this),
+                        new AddEmailCommand(this)
                 ), Message::getText
+        );
+        this.replayedCommandHandler = new CommandHandler<>(
+                List.of(
+                        new PrintNewEmailAddress(this),
+                        new PrintNewPassword(ememeBotFunctionality, this)
+                ),
+                message -> message.getReplyMessage().getText()
         );
         this.commandButtonsKeyboard = new Keyboard();
         commandButtonsKeyboard.setButtons(List.of(
@@ -62,6 +75,13 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
         ));
         commandButtonsKeyboard.setInline(true);
     }
+
+    private void handleReplayedMessage(Message message) throws NonHandleCommandException {
+        if(message.getReplyMessage()!=null){
+            replayedCommandHandler.handle(message);
+        }
+    }
+
     @Override
     public String handle(String update) {
         return callbackHandler.parse(update);
@@ -70,6 +90,16 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     @Override
     public void send(VkRecipient vkRecipient, String messageText) throws Exception{
         sendMessageText(vkRecipient.chatId(), messageText);
+    }
+
+    public void sendMessageWithPayload(int chatId, String message, String payload) throws ClientException, ApiException {
+        vkApiClient.messages()
+                .send(groupActor)
+                .message(message)
+                .randomId(getRandomMessageId())
+                .peerId(chatId)
+                .payload(payload)
+                .execute();
     }
 
     public void sendCommandButtons(int chatId) throws ClientException, ApiException {
