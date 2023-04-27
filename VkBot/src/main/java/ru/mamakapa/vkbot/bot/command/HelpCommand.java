@@ -24,6 +24,7 @@ public class HelpCommand extends BotCommand<Message> {
     public void execute(Message message) {
         try {
             vkBot.send(new VkRecipient(message.getPeerId()), HELP_MESSAGE_TEXT);
+            vkBot.sendCommandButtons(message.getPeerId());
         } catch (Exception ignored){}
     }
 }

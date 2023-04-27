@@ -5,7 +5,7 @@ import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.messages.Message;
+import com.vk.api.sdk.objects.messages.*;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
@@ -28,6 +28,7 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     private final CallbackHandler callbackHandler;
     private final Random random = new Random();
     private final CommandHandler<Message> commandHandler;
+    private final Keyboard commandButtonsKeyboard;
 
     public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
         this.vkApiClient = new VkApiClient(new HttpTransportClient());
@@ -46,6 +47,20 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
                         new HelpCommand(this)
                 ), Message::getText
         );
+        this.commandButtonsKeyboard = new Keyboard();
+        commandButtonsKeyboard.setButtons(List.of(
+                commandHandler.getAllCommands().map(
+                        s->{
+                            KeyboardButton keyboardButton = new KeyboardButton();
+                            KeyboardButtonAction action = new KeyboardButtonAction();
+                            action.setLabel(s);
+                            action.setType(TemplateActionTypeNames.TEXT);
+                            keyboardButton.setAction(action);
+                            keyboardButton.setColor(KeyboardButtonColor.DEFAULT);
+                            return keyboardButton;
+                        }).toList()
+        ));
+        commandButtonsKeyboard.setInline(true);
     }
     @Override
     public String handle(String update) {
@@ -55,6 +70,16 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     @Override
     public void send(VkRecipient vkRecipient, String messageText) throws Exception{
         sendMessageText(vkRecipient.chatId(), messageText);
+    }
+
+    public void sendCommandButtons(int chatId) throws ClientException, ApiException {
+        vkApiClient.messages()
+                .send(groupActor)
+                .randomId(getRandomMessageId())
+                .message("Choose another functions:")
+                .keyboard(commandButtonsKeyboard)
+                .peerId(chatId)
+                .execute();
     }
 
     private void sendMessageText(int chatId, String messageText) throws ClientException, ApiException {

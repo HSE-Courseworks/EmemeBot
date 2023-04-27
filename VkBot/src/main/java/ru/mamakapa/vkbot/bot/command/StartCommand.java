@@ -22,6 +22,7 @@ public final class StartCommand extends BotCommand<Message> {
         try {
             vkBot.send(new VkRecipient(message.getPeerId()),
                     "Hello! You was registered!");
+            vkBot.sendCommandButtons(message.getPeerId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
