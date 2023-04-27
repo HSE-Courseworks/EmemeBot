@@ -4,6 +4,7 @@ import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleComma
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class CommandHandler<MESSAGE> {
     private final List<BotCommand<MESSAGE>> commands;
@@ -14,7 +15,7 @@ public final class CommandHandler<MESSAGE> {
         this.getCommandNameFunction = commandNameFunction;
     }
 
-    public void handle(MESSAGE message){
+    public void handle(MESSAGE message) throws NonHandleCommandException {
         commands.stream()
                 .filter(abstractBotCommand -> abstractBotCommand.command.equals(getCommandNameFunction.apply(message)))
                 .findFirst()
@@ -22,5 +23,9 @@ public final class CommandHandler<MESSAGE> {
                 .execute(message);
     }
 
+    public Stream<String> getAllCommands(){
+        return this.commands.stream()
+                .map(messageBotCommand -> messageBotCommand.command);
+    }
 
 }
