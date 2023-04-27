@@ -6,7 +6,6 @@ import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.BotCommand;
 import ru.mamakapa.ememeSenderFunctionality.bot.data.EmailData;
 import ru.mamakapa.vkbot.bot.VkBot;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class PrintNewPassword extends BotCommand<Message> {
             int chatId = Integer.parseInt(emailDataMap.get("chat_id"));
             EmailData emailData = new EmailData(emailDataMap.get("email_address"), message.getText());
             System.out.printf("Email = %s Password = %s\n", emailData.address(), emailData.password());
-            vkBot.send(new VkRecipient(chatId),
+            vkBot.send(chatId,
                     "Your email with data: %s was successfully added!".formatted(emailData.toString()));
             ememeBotFunctionality.addEmail(chatId, emailData);
         } catch (Exception ignored) {}

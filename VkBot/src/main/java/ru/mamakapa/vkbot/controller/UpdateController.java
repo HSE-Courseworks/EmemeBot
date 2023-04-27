@@ -2,7 +2,6 @@ package ru.mamakapa.vkbot.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 import ru.mamakapa.vkbot.dto.EmailLetterRequest;
 import ru.mamakapa.vkbot.service.MessageSender;
 
@@ -10,9 +9,9 @@ import ru.mamakapa.vkbot.service.MessageSender;
 @RequestMapping("vkbot/updates")
 @Slf4j
 public class UpdateController {
-    private final MessageSender<VkRecipient, String> messageSender;
+    private final MessageSender<Integer, String> messageSender;
 
-    public UpdateController(MessageSender<VkRecipient, String> messageSender) {
+    public UpdateController(MessageSender<Integer, String> messageSender) {
         this.messageSender = messageSender;
     }
 
@@ -21,6 +20,6 @@ public class UpdateController {
             @RequestBody EmailLetterRequest emailLetterRequest,
             @PathVariable int chatId) throws Exception {
         log.info("Send %d message %s".formatted(chatId, emailLetterRequest.messageContent()));
-        messageSender.send(new VkRecipient(chatId), emailLetterRequest.messageContent());
+        messageSender.send(chatId, emailLetterRequest.messageContent());
     }
 }

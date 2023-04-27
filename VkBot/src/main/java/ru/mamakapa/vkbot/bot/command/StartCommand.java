@@ -4,7 +4,6 @@ import com.vk.api.sdk.objects.messages.Message;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.BotCommand;
 import ru.mamakapa.vkbot.bot.VkBot;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 
 public final class StartCommand extends BotCommand<Message> {
     private final EmemeBotFunctionality ememeBotFunctionality;
@@ -20,7 +19,7 @@ public final class StartCommand extends BotCommand<Message> {
     public void execute(Message message) {
         ememeBotFunctionality.registerUser(message.getPeerId());
         try {
-            vkBot.send(new VkRecipient(message.getPeerId()),
+            vkBot.send(message.getPeerId(),
                     "Hello! You was registered!");
             vkBot.sendCommandButtons(message.getPeerId());
         } catch (Exception e) {

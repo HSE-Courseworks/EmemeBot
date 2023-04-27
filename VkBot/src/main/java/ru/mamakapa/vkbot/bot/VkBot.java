@@ -15,7 +15,6 @@ import ru.mamakapa.vkbot.bot.command.*;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
 import ru.mamakapa.vkbot.config.VkBotConfig;
 import ru.mamakapa.vkbot.service.MessageSender;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<String> {
+public class VkBot implements MessageSender<Integer, String>, UpdateHandler<String> {
     private static final int MAX_SIZE_KEYBOARD_BUTTONS = 10;
     private static final int MAX_COLUMN_COUNT = 2;
     private final VkApiClient vkApiClient;
@@ -100,8 +99,8 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     }
 
     @Override
-    public void send(VkRecipient vkRecipient, String messageText) throws Exception{
-        sendMessageText(vkRecipient.chatId(), messageText);
+    public void send(Integer chatId, String messageText) throws Exception{
+        sendMessageText(chatId, messageText);
     }
 
     public void sendMessageWithPayload(int chatId, String message, String payload) throws ClientException, ApiException {

@@ -6,7 +6,6 @@ import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.BotCommand;
 import ru.mamakapa.vkbot.bot.VkBot;
 import ru.mamakapa.vkbot.bot.command.DeleteEmailCommand;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class PrintEmailForRemoving extends BotCommand<Message> {
             int chatId = Integer.parseInt(userData.get("chat_id"));
             String emailAddress = message.getText();
             ememeBotFunctionality.deleteEmail(chatId, emailAddress);
-            vkBot.send(new VkRecipient(chatId), """
+            vkBot.send(chatId, """
                     Email with address %s was successfully removed!
                     """.formatted(emailAddress));
         } catch (Exception ignored) {}

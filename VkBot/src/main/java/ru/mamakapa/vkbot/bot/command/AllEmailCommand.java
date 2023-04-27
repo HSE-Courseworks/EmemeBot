@@ -5,7 +5,6 @@ import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.BotCommand;
 import ru.mamakapa.ememeSenderFunctionality.bot.data.EmailData;
 import ru.mamakapa.vkbot.bot.VkBot;
-import ru.mamakapa.vkbot.bot.data.VkRecipient;
 
 public class AllEmailCommand extends BotCommand<Message> {
     private final VkBot vkBot;
@@ -19,7 +18,7 @@ public class AllEmailCommand extends BotCommand<Message> {
     @Override
     public void execute(Message message) {
         try {
-            vkBot.send(new VkRecipient(message.getPeerId()),
+            vkBot.send(message.getPeerId(),
                     ememeBotFunctionality
                             .getAllEmails(message.getPeerId())
                             .stream()
