@@ -17,7 +17,8 @@ public final class CommandHandler<MESSAGE> {
 
     public void handle(MESSAGE message) throws NonHandleCommandException {
         commands.stream()
-                .filter(abstractBotCommand -> abstractBotCommand.command.equals(getCommandNameFunction.apply(message)))
+                .filter(messageBotCommand -> getCommandNameFunction.apply(message)
+                        .matches(".*"+messageBotCommand.command+".*"))
                 .findFirst()
                 .orElseThrow(() -> new NonHandleCommandException(getCommandNameFunction.apply(message)))
                 .execute(message);
