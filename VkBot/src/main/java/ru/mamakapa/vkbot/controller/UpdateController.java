@@ -2,8 +2,8 @@ package ru.mamakapa.vkbot.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.mamakapa.ememeSenderFunctionality.bot.service.MessageSender;
 import ru.mamakapa.vkbot.dto.EmailLetterRequest;
-import ru.mamakapa.vkbot.service.MessageSender;
 
 @RestController
 @RequestMapping("vkbot/updates")

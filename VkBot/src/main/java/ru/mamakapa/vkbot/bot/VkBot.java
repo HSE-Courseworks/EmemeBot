@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
+import ru.mamakapa.ememeSenderFunctionality.bot.service.*;
 import ru.mamakapa.vkbot.bot.command.*;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
 import ru.mamakapa.vkbot.config.VkBotConfig;
-import ru.mamakapa.vkbot.service.MessageSender;
-import ru.mamakapa.vkbot.service.UpdateHandler;
 
 import java.util.ArrayList;
 import java.util.List;
