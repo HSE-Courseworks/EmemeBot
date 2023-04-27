@@ -13,11 +13,12 @@ import java.util.Map;
 public class PrintNewEmailAddress extends BotCommand<Message> {
     public final static String SEND_NEW_PASSWORD = "Send password with replying to this message!";
     private final VkBot vkBot;
-    private final Gson gson = new Gson();
+    private final Gson gson;
 
-    public PrintNewEmailAddress(VkBot vkBot) {
+    public PrintNewEmailAddress(VkBot vkBot, Gson gson) {
         super(AddEmailCommand.ADD_NEW_EMAIL_MESSAGE);
         this.vkBot = vkBot;
+        this.gson = gson;
     }
 
     @Override

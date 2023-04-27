@@ -1,5 +1,6 @@
 package ru.mamakapa.vkbot.bot;
 
+import com.google.gson.Gson;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
@@ -10,9 +11,8 @@ import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
-import ru.mamakapa.vkbot.bot.command.AddEmailCommand;
-import ru.mamakapa.vkbot.bot.command.HelpCommand;
-import ru.mamakapa.vkbot.bot.command.StartCommand;
+import ru.mamakapa.vkbot.bot.command.*;
+import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
 import ru.mamakapa.vkbot.bot.data.VkRecipient;
@@ -21,11 +21,14 @@ import ru.mamakapa.vkbot.config.VkBotConfig;
 import ru.mamakapa.vkbot.service.MessageSender;
 import ru.mamakapa.vkbot.service.UpdateHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<String> {
+    private static final int MAX_SIZE_KEYBOARD_BUTTONS = 10;
+    private static final int MAX_COLUMN_COUNT = 2;
     private final VkApiClient vkApiClient;
     private final GroupActor groupActor;
     private final CallbackHandler callbackHandler;
@@ -35,6 +38,7 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
     private final Keyboard commandButtonsKeyboard;
 
     public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
+        Gson gson = new Gson();
         this.vkApiClient = new VkApiClient(new HttpTransportClient());
         this.groupActor = new GroupActor(config.groupId(), config.token());
         this.callbackHandler = new CallbackHandler(config.callback().confirmationCode(), config.callback().secret()) {
@@ -50,29 +54,37 @@ public class VkBot implements MessageSender<VkRecipient, String>, UpdateHandler<
                 List.of(
                         new StartCommand(ememeBotFunctionality, this),
                         new HelpCommand(this),
-                        new AddEmailCommand(this)
+                        new AddEmailCommand(this),
+                        new DeleteEmailCommand(this),
+                        new AllEmailCommand(this, ememeBotFunctionality),
+                        new UnregisterUserCommand(ememeBotFunctionality, this)
                 ), Message::getText
         );
         this.replayedCommandHandler = new CommandHandler<>(
                 List.of(
-                        new PrintNewEmailAddress(this),
-                        new PrintNewPassword(ememeBotFunctionality, this)
+                        new PrintNewEmailAddress(this, gson),
+                        new PrintNewPassword(ememeBotFunctionality, this, gson),
+                        new PrintEmailForRemoving(gson, ememeBotFunctionality, this)
                 ),
                 message -> message.getReplyMessage().getText()
         );
         this.commandButtonsKeyboard = new Keyboard();
-        commandButtonsKeyboard.setButtons(List.of(
-                commandHandler.getAllCommands().map(
-                        s->{
-                            KeyboardButton keyboardButton = new KeyboardButton();
-                            KeyboardButtonAction action = new KeyboardButtonAction();
-                            action.setLabel(s);
-                            action.setType(TemplateActionTypeNames.TEXT);
-                            keyboardButton.setAction(action);
-                            keyboardButton.setColor(KeyboardButtonColor.DEFAULT);
-                            return keyboardButton;
-                        }).toList()
-        ));
+        List<String> commands = commandHandler.getAllCommands().limit(MAX_SIZE_KEYBOARD_BUTTONS).toList();
+        List<List<KeyboardButton>> buttons = new ArrayList<>();
+        for(int i = 0; i<commands.size()/MAX_COLUMN_COUNT; i++){
+            List<KeyboardButton> buttonList = new ArrayList<>();
+            for(int j=i*MAX_COLUMN_COUNT; j<(i+1)*MAX_COLUMN_COUNT&&j<commands.size(); j++){
+                KeyboardButton keyboardButton = new KeyboardButton();
+                KeyboardButtonAction action = new KeyboardButtonAction();
+                action.setLabel(commands.get(j));
+                action.setType(TemplateActionTypeNames.TEXT);
+                keyboardButton.setAction(action);
+                keyboardButton.setColor(KeyboardButtonColor.DEFAULT);
+                buttonList.add(keyboardButton);
+            }
+            buttons.add(buttonList);
+        }
+        commandButtonsKeyboard.setButtons(buttons);
         commandButtonsKeyboard.setInline(true);
     }
 

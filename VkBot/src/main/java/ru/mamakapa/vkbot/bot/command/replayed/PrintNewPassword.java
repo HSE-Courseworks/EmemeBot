@@ -11,13 +11,14 @@ import ru.mamakapa.vkbot.bot.data.VkRecipient;
 import java.util.Map;
 
 public class PrintNewPassword extends BotCommand<Message> {
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final EmemeBotFunctionality ememeBotFunctionality;
     private final VkBot vkBot;
-    public PrintNewPassword(EmemeBotFunctionality ememeBotFunctionality, VkBot vkBot) {
+    public PrintNewPassword(EmemeBotFunctionality ememeBotFunctionality, VkBot vkBot, Gson gson) {
         super(PrintNewEmailAddress.SEND_NEW_PASSWORD);
         this.vkBot = vkBot;
         this.ememeBotFunctionality = ememeBotFunctionality;
+        this.gson = gson;
     }
 
     @Override
