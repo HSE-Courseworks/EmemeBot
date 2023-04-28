@@ -1,4 +1,4 @@
-package ru.mamakapa.telegramBot.controller;
+package ru.mamakapa.telegramBot.bot.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
