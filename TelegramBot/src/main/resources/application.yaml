@@ -4,3 +4,7 @@ server:
 bot:
   telegram:
     token: ${BOT_TOKEN}
+
+springdoc:
+  swagger-ui:
+    path: swagger-ui
