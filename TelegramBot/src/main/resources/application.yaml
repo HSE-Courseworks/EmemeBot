@@ -1,0 +1,6 @@
+server:
+  port: 9999
+
+bot:
+  telegram:
+    token: ${BOT_TOKEN}

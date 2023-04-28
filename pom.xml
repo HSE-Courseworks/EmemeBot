@@ -9,6 +9,7 @@
 <packaging>pom</packaging>
     <modules>
         <module>EmemeSenderFunctionality</module>
+        <module>TelegramBot</module>
     </modules>
 
     <properties>
