@@ -1,6 +1,56 @@
+#logs
+EmemeBotLogs.log
+*.gz
+
+#project
+src/main/resources/*
+!src/main/resources/application-test.properties
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!/src/main//target/!/src/test/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/build//build/
+
+### VS Code ###
+.vscode/
+
+### Maven ###
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+/EmemeEmail/src/main/resources/servicesFromPreviousVersion/ememebot/
 /.idea/compiler.xml
 /.idea/encodings.xml
 /.idea/jarRepositories.xml
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/.idea/uiDesigner.xml
