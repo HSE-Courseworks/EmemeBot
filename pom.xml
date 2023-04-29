@@ -7,10 +7,11 @@
 <artifactId>EmemeBot</artifactId>
 <version>0.0.1-SNAPSHOT</version>
 <packaging>pom</packaging>
-
-<modules>
-    <module>EmemeEmail</module>
-</modules>
+    <modules>
+        <module>VkBot</module>
+        <module>EmemeSenderFunctionality</module>
+        <module>EmemeEmail</module>
+    </modules>
 
 <properties>
     <java.version>17</java.version>
