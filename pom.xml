@@ -7,6 +7,11 @@
 <artifactId>EmemeBot</artifactId>
 <version>0.0.1-SNAPSHOT</version>
 <packaging>pom</packaging>
+    <modules>
+        <module>VkBot</module>
+        <module>EmemeSenderFunctionality</module>
+        <module>EmemeEmail</module>
+    </modules>
 
 <modules>
     <module>EmemeEmail</module>
