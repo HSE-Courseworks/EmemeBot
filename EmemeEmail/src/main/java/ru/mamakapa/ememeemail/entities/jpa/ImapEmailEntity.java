@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,6 +16,7 @@ import java.util.List;
 @Table(name = "imapemail")
 public class ImapEmailEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "address")
@@ -28,6 +30,15 @@ public class ImapEmailEntity {
     @Column(name = "lastupdated")
     private Timestamp lastUpdated;
 
-    @ManyToMany
-    private List<BotUserEntity> users;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "emails")
+    private List<BotUserEntity> users = new ArrayList<>();
+
+    public ImapEmailEntity(String address, String password, String host,
+                           Timestamp lastChecked, Timestamp lastUpdated) {
+        this.address = address;
+        this.password = password;
+        this.host = host;
+        this.lastChecked = lastChecked;
+        this.lastUpdated = lastUpdated;
+    }
 }

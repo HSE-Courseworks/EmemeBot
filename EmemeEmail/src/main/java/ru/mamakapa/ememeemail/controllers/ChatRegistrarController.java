@@ -29,7 +29,7 @@ public class ChatRegistrarController {
     })
     @PostMapping("/{messengerType}/{chatId}")
     public void registerChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
-        botUserService.register(chatId);
+        botUserService.register(chatId, messengerType);
     }
 
     @Operation(summary = "Delete user by chatId from tg or vk messengers specified in the path")
@@ -44,6 +44,6 @@ public class ChatRegistrarController {
     })
     @DeleteMapping("/{messengerType}/{chatId}")
     public void deleteChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
-        botUserService.delete(chatId);
+        botUserService.delete(chatId, messengerType);
     }
 }

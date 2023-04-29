@@ -43,7 +43,7 @@ public class EmailController {
     public EmailResponse addNewEmail(@RequestParam(required = true) MessengerType messengerType,
                                      @RequestParam(required = true) long chatId,
                                      @RequestBody @Valid AddNewEmailRequest addNewLinkRequest){
-        var imapEmail = imapEmailService.add(chatId,
+        var imapEmail = imapEmailService.add(chatId, messengerType,
                 addNewLinkRequest.address(), addNewLinkRequest.appPassword(), addNewLinkRequest.host());
         return EmailResponse.builder()
                 .address(imapEmail.getEmail())
@@ -69,7 +69,7 @@ public class EmailController {
     public EmailResponse deleteEmail(@RequestParam(required = true) MessengerType messengerType,
                                      @RequestParam(required = true) long chatId,
                                      @RequestBody @Valid DeleteEmailRequest deleteEmailRequest){
-        var imapEmail = imapEmailService.remove(chatId, deleteEmailRequest.address());
+        var imapEmail = imapEmailService.remove(chatId, messengerType, deleteEmailRequest.address());
         return EmailResponse.builder()
                 .address(imapEmail.getEmail())
                 .host(imapEmail.getHost())
@@ -92,7 +92,7 @@ public class EmailController {
     @GetMapping()
     public AllEmailsResponse getAllUserEmails(@RequestParam(required = true) MessengerType messengerType,
                                               @RequestParam(required = true) long chatId){
-        var emails = imapEmailService.getAllEmailsForChatId(chatId).stream()
+        var emails = imapEmailService.getAllEmailsForChatId(chatId, messengerType).stream()
                 .map(e -> new EmailResponse(e.getEmail(), e.getAppPassword(), e.getHost()))
                 .toList();
         return new AllEmailsResponse(emails);
