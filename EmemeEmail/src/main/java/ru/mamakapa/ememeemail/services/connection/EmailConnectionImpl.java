@@ -30,9 +30,7 @@ public class EmailConnectionImpl implements EmailConnection {
 
         log.info("Connected");
 
-        if (!loginConnections.containsKey(email.getEmail())){
-            loginConnections.put(email.getEmail(), store);
-        }
+        loginConnections.put(email.getEmail(), store);
     }
 
     @Override
