@@ -4,8 +4,8 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
