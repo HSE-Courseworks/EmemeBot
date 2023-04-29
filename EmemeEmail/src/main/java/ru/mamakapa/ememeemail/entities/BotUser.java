@@ -2,8 +2,8 @@ package ru.mamakapa.ememeemail.entities;
 
 import lombok.*;
 
-@Getter
-@Setter
+
+@Data
 @Builder
 @ToString
 @AllArgsConstructor
