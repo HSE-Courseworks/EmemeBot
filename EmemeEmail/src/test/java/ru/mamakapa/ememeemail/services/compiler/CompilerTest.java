@@ -3,6 +3,7 @@ package ru.mamakapa.ememeemail.services.compiler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.mamakapa.ememeemail.IntegrationEnvironment;
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 
@@ -13,7 +14,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CompilerTest {
+class CompilerTest extends IntegrationEnvironment {
     @Autowired
     EmailConnection connection;
 
@@ -24,7 +25,7 @@ class CompilerTest {
         //given
         var email = ImapEmail.builder()
                 .email("ememebot@yandex.ru")
-                .appPassword("crlieafbnbtsezxc")
+                .appPassword("gfmpdykdidopytql")
                 .host("imap.yandex.ru")
                 .botId(888L)
                 .id(13L)
