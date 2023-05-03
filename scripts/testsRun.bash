@@ -1,1 +1,0 @@
-mvn -Dtest=EmailLetterTest,EmailConnectionTest test
