@@ -23,11 +23,15 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
     public String handle(Update update) {
         try {
             log.info("new update = {}", update);
-            if(update.hasMessage()) {
+            if (update.hasMessage()) {
                 Message message = update.getMessage();
-                execute(new SendMessage(String.valueOf(message.getChatId()), "Hello, %s".formatted(message.getFrom().getUserName())));
+                execute(new SendMessage(
+                        String.valueOf(message.getChatId()),
+                        "Hello, %s".formatted(message.getFrom().getUserName())
+                ));
             }
-        } catch (TelegramApiException ignored) {}
+        } catch (TelegramApiException ignored) {
+        }
         return "OK";
     }
 

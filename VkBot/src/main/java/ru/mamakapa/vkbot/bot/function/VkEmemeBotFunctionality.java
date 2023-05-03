@@ -12,7 +12,7 @@ public class VkEmemeBotFunctionality implements EmemeBotFunctionality {
 
     @Override
     public void registerUser(int chatId) {
-        if(!users.containsKey(chatId)){
+        if (!users.containsKey(chatId)) {
             users.put(chatId, new ArrayList<>());
         }
     }
@@ -24,7 +24,7 @@ public class VkEmemeBotFunctionality implements EmemeBotFunctionality {
 
     @Override
     public void addEmail(int chatId, EmailData emailData) {
-        if(users.containsKey(chatId)){
+        if (users.containsKey(chatId)) {
             users.get(chatId).add(emailData);
         }
     }
@@ -36,7 +36,7 @@ public class VkEmemeBotFunctionality implements EmemeBotFunctionality {
 
     @Override
     public void deleteEmail(int chatId, String address) {
-        if(users.containsKey(chatId)){
+        if (users.containsKey(chatId)) {
             users.get(chatId).removeIf(emailData -> emailData.address().equals(address));
         }
     }

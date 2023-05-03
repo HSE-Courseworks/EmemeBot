@@ -11,6 +11,7 @@
         <module>EmemeSenderFunctionality</module>
         <module>TelegramBot</module>
         <module>EmemeEmail</module>
+        <module>VkBot</module>
     </modules>
 
 

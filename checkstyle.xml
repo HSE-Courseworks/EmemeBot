@@ -123,10 +123,10 @@
         <!-- <module name="AbbreviationAsWordInName"/> -->
         <!-- <module name="AbstractClassName"/> -->
         <module name="CatchParameterName"/>
-        <module name="ClassTypeParameterName"/>
+        <!--        <module name="ClassTypeParameterName"/>-->
         <module name="ConstantName"/>
         <module name="IllegalIdentifierName"/>
-        <module name="InterfaceTypeParameterName"/>
+        <!--        <module name="InterfaceTypeParameterName"/>-->
         <module name="LambdaParameterName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>

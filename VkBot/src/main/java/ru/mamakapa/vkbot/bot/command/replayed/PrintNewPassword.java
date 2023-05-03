@@ -26,7 +26,6 @@ public class PrintNewPassword extends BotCommand<Message> {
             Map<String, String> emailDataMap = gson.fromJson(message.getReplyMessage().getPayload(), Map.class);
             int chatId = Integer.parseInt(emailDataMap.get("chat_id"));
             EmailData emailData = new EmailData(emailDataMap.get("email_address"), message.getText());
-            System.out.printf("Email = %s Password = %s\n", emailData.address(), emailData.password());
             vkBot.send(chatId,
                     "Your email with data: %s was successfully added!".formatted(emailData.toString()));
             ememeBotFunctionality.addEmail(chatId, emailData);

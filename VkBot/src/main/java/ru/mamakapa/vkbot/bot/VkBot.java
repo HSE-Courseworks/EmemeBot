@@ -42,10 +42,11 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
         this.callbackHandler = new CallbackHandler(config.callback().confirmationCode(), config.callback().secret()) {
             @Override
             protected void messageNew(Integer groupId, Message message) {
-                try{
+                try {
                     handleReplayedMessage(message);
                     commandHandler.handle(message);
-                }catch (NonHandleCommandException ignored){}
+                } catch (NonHandleCommandException ignored) {
+                }
             }
         };
         this.commandHandler = new CommandHandler<>(
@@ -69,9 +70,9 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
         this.commandButtonsKeyboard = new Keyboard();
         List<String> commands = commandHandler.getAllCommands().limit(MAX_SIZE_KEYBOARD_BUTTONS).toList();
         List<List<KeyboardButton>> buttons = new ArrayList<>();
-        for(int i = 0; i<commands.size()/MAX_COLUMN_COUNT; i++){
+        for (int i = 0; i < commands.size() / MAX_COLUMN_COUNT; i++) {
             List<KeyboardButton> buttonList = new ArrayList<>();
-            for(int j=i*MAX_COLUMN_COUNT; j<(i+1)*MAX_COLUMN_COUNT&&j<commands.size(); j++){
+            for (int j = i * MAX_COLUMN_COUNT; j < (i + 1) * MAX_COLUMN_COUNT && j < commands.size(); j++) {
                 KeyboardButton keyboardButton = new KeyboardButton();
                 KeyboardButtonAction action = new KeyboardButtonAction();
                 action.setLabel(commands.get(j));
@@ -87,7 +88,7 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     }
 
     private void handleReplayedMessage(Message message) throws NonHandleCommandException {
-        if(message.getReplyMessage()!=null){
+        if (message.getReplyMessage() != null) {
             replayedCommandHandler.handle(message);
         }
     }
@@ -98,11 +99,15 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     }
 
     @Override
-    public void send(Integer chatId, String messageText) throws Exception{
+    public void send(Integer chatId, String messageText) throws Exception {
         sendMessageText(chatId, messageText);
     }
 
-    public void sendMessageWithPayload(int chatId, String message, String payload) throws ClientException, ApiException {
+    public void sendMessageWithPayload(
+            int chatId,
+            String message,
+            String payload
+    ) throws ClientException, ApiException {
         vkApiClient.messages()
                 .send(groupActor)
                 .message(message)
