@@ -13,6 +13,6 @@ public class EmemeEmailApplication {
     public static void main(String[] args) {
         var ctx = SpringApplication.run(EmemeEmailApplication.class, args);
         var config = ctx.getBean(ApplicationConfig.class);
-        System.out.println(config.test());
+        System.out.println(config);
     }
 }

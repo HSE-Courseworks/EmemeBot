@@ -10,6 +10,8 @@ import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 import javax.mail.MessagingException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,14 +20,16 @@ class CompilerTest extends IntegrationEnvironment {
     @Autowired
     EmailConnection connection;
 
-    Compiler compiler = new CompilerImpl();
+    Path path = Paths.get("src/main/resources/savedir").normalize().toAbsolutePath();
+
+    Compiler compiler = new CompilerImpl(path);
 
     @Test
     public void compile() throws MessagingException, IOException {
         //given
         var email = ImapEmail.builder()
                 .email("ememebot@yandex.ru")
-                .appPassword("gfmpdykdidopytql")
+                .appPassword("haoagtumanaptkfa")
                 .host("imap.yandex.ru")
                 .botId(888L)
                 .id(13L)

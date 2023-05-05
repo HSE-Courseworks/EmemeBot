@@ -1,5 +1,7 @@
 package ru.mamakapa.ememeemail.configurations;
 
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,7 +15,7 @@ import java.time.Duration;
 @Configuration
 public class ClientConfiguration {
     @Bean
-    VkBotClient vkBotClient(ApplicationConfig appConfig){
+    public VkBotClient vkBotClient(ApplicationConfig appConfig){
         WebClient webClient = WebClient.builder()
                 .baseUrl(appConfig.vkBotBaseUrl())
                 .build();
@@ -25,7 +27,7 @@ public class ClientConfiguration {
     }
 
     @Bean
-    TgBotClient tgBotClient(ApplicationConfig appConfig){
+    public TgBotClient tgBotClient(ApplicationConfig appConfig){
         WebClient webClient = WebClient.builder()
                 .baseUrl(appConfig.tgBotBaseUrl())
                 .build();
@@ -34,5 +36,11 @@ public class ClientConfiguration {
                 .blockTimeout(Duration.ofSeconds(10, 10))
                 .build();
         return factory.createClient(TgBotClient.class);
+    }
+
+    @Bean
+    DbxClientV2 dropboxClient(ApplicationConfig appConfig){
+        var config = DbxRequestConfig.newBuilder(appConfig.dropbox().clientId()).build();
+        return new DbxClientV2(config, appConfig.dropbox().token());
     }
 }
