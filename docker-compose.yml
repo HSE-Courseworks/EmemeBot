@@ -1,0 +1,42 @@
+version: 3.0.1
+
+services:
+  postgres:
+    container_name: EmemeEmailServiceDB
+    image: postgres:15-alpine
+    ports:
+      - "5443:5432"
+    environment:
+      - POSTGRES_PASSWORD=ememebot
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=emailService
+    volumes:
+      - ememe_email_db_data:/var/lib/postgresql/data
+    networks:
+      - ememebot
+
+  liquibase-migrations:
+    container_name: ememe_migrations
+    image: liquibase/liquibase:4.18
+    depends_on:
+      - postgres
+    command:
+      - --hub-mode=off
+      - --changelog-file=master.xml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgres:5432/emailService
+      - --username=postgres
+      - --password=ememebot
+      - update
+    volumes:
+      - ./EmemeEmail/src/main/resources/db/migrations:/liquibase/changelog
+    networks:
+      - ememebot
+
+volumes:
+  ememe_email_db_data:
+    name: ememe_email_db_data
+
+networks:
+  ememebot:
+    driver: bridge
