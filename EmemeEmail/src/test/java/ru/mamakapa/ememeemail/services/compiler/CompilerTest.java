@@ -3,26 +3,19 @@ package ru.mamakapa.ememeemail.services.compiler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-<<<<<<< HEAD
 import ru.mamakapa.ememeemail.IntegrationEnvironment;
-=======
->>>>>>> telegramBot
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 
 import javax.mail.MessagingException;
 
 import java.io.IOException;
-<<<<<<< HEAD
 import java.nio.file.Path;
 import java.nio.file.Paths;
-=======
->>>>>>> telegramBot
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-<<<<<<< HEAD
 class CompilerTest extends IntegrationEnvironment {
     @Autowired
     EmailConnection connection;
@@ -30,24 +23,13 @@ class CompilerTest extends IntegrationEnvironment {
     Path path = Paths.get("src/main/resources/savedir").normalize().toAbsolutePath();
 
     Compiler compiler = new CompilerImpl(path);
-=======
-class CompilerTest {
-    @Autowired
-    EmailConnection connection;
-
-    Compiler compiler = new CompilerImpl();
->>>>>>> telegramBot
 
     @Test
     public void compile() throws MessagingException, IOException {
         //given
         var email = ImapEmail.builder()
                 .email("ememebot@yandex.ru")
-<<<<<<< HEAD
                 .appPassword("haoagtumanaptkfa")
-=======
-                .appPassword("crlieafbnbtsezxc")
->>>>>>> telegramBot
                 .host("imap.yandex.ru")
                 .botId(888L)
                 .id(13L)

@@ -29,7 +29,6 @@ import java.util.Optional;
 public class EmailNotifier {
     final private static Path FILE_SAVING_PATH = Paths.get("EmemeEmail/src/main/resources/savedir").toAbsolutePath();
     final private ImapEmailService emailService;
-    final private BotUserService userService;
     final private EmailConnection emailConnection;
     final private VkBotClient vkBotClient;
     final private TgBotClient tgBotClient;
@@ -93,6 +92,7 @@ public class EmailNotifier {
             LetterContent content = getLetterContent(letter);
             for (var user : users){
                 sendUpdate(user, content);
+                sendFiles(user, letter.getFiles());
             }
             compiler.deleteLetterFiles(letter);
         }
@@ -101,18 +101,20 @@ public class EmailNotifier {
     private LetterContent getLetterContent(EmailLetter letter){
         return LetterContent.builder()
                 .messageContent(letter.getEnvelope() + "\n" + letter.getBodyPart())
-                .fileLinks(uploadFilesAndGetLinks(letter.getFiles()))
                 .build();
     }
 
-    private List<String> uploadFilesAndGetLinks(List<File> files){
+    private void sendFiles(BotUser user, List<File> files){
         log.info("uploading files");
-        List<String> links = new ArrayList<>();
         for (var f : files){
-            links.add(fileUploader.uploadFileAndGetDownloadLink(f));
+            try {
+                fileUploader.uploadFileToMessenger(f, user.getChatId(), user.getMessengerType());
+            } catch (RuntimeException exception){
+                log.info("Error sending file to user " + user.getChatId() + " " + user.getMessengerType() +
+                        " exception:" + exception.getMessage());
+            }
         }
-        log.info(links.size() + " files were uploaded");
-        return links;
+        log.info("files were uploaded");
     }
 
     private void sendUpdate(BotUser user, LetterContent content){
@@ -125,6 +127,5 @@ public class EmailNotifier {
         } catch (RuntimeException exception){
             log.info("Exception in sendUpdate method! Message: " + exception.getMessage());
         }
-
     }
 }

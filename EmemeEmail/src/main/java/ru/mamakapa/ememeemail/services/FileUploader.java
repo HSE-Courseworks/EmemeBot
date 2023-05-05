@@ -1,8 +1,9 @@
 package ru.mamakapa.ememeemail.services;
 
+import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
+
 import java.io.File;
-import java.net.URI;
 
 public interface FileUploader {
-    String uploadFileAndGetDownloadLink(File file);
+    void uploadFileToMessenger(File file, Long chatId, MessengerType messengerType);
 }
