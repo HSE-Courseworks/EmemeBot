@@ -1,7 +1,10 @@
 package ru.mamakapa.ememeemail.services;
 
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
+<<<<<<< HEAD
 import ru.mamakapa.ememeemail.entities.BotUser;
+=======
+>>>>>>> telegramBot
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 
 import java.util.List;
@@ -15,8 +18,11 @@ public interface ImapEmailService {
 
     void patch(ImapEmail emailWithUpdates);
 
+<<<<<<< HEAD
     List<BotUser> getAllSubscribedUsersForEmail(String email);
 
     ImapEmail getLatestCheckedEmail();
 
+=======
+>>>>>>> telegramBot
 }

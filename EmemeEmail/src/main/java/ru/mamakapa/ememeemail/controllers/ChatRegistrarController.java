@@ -29,6 +29,10 @@ public class ChatRegistrarController {
     })
     @PostMapping("/{messengerType}/{chatId}")
     public void registerChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
+<<<<<<< HEAD
+=======
+
+>>>>>>> telegramBot
         botUserService.register(chatId, messengerType);
     }
 
@@ -45,5 +49,9 @@ public class ChatRegistrarController {
     @DeleteMapping("/{messengerType}/{chatId}")
     public void deleteChat(@PathVariable MessengerType messengerType, @PathVariable Long chatId){
         botUserService.delete(chatId, messengerType);
+<<<<<<< HEAD
+=======
+
+>>>>>>> telegramBot
     }
 }

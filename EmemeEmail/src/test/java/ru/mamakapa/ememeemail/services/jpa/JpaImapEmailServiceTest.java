@@ -69,8 +69,12 @@ class JpaImapEmailServiceTest extends IntegrationEnvironment {
                 () -> assertEquals("jjdjasjajja", emailRepository.findByAddress("emmebot@yandex.ru").get().getPassword()),
                 () -> assertEquals(2, userVK.getEmails().size()),
                 () -> assertEquals(testEmail.getId(), userRepository.findByChatIdAndType(888L, MessengerType.TG).get().getEmails().get(0).getId()),
+<<<<<<< HEAD
                 () -> assertEquals(2, emailRepository.findAll().size()),
                 () -> assertEquals(2, emailService.getAllSubscribedUsersForEmail("emmebot@yandex.ru").size())
+=======
+                () -> assertEquals(2, emailRepository.findAll().size())
+>>>>>>> telegramBot
         );
     }
 
@@ -189,6 +193,7 @@ class JpaImapEmailServiceTest extends IntegrationEnvironment {
         //then
         assertTrue(res.isEmpty());
     }
+<<<<<<< HEAD
 
     @Test
     @Transactional
@@ -214,4 +219,6 @@ class JpaImapEmailServiceTest extends IntegrationEnvironment {
         var res = emailService.getLatestCheckedEmail();
         assertEquals(latest, res);
     }
+=======
+>>>>>>> telegramBot
 }

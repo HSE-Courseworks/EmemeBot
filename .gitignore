@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> telegramBot
 #logs
 EmemeBotLogs.log
 *.gz
@@ -55,4 +58,8 @@ buildNumber.properties
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+<<<<<<< HEAD
+=======
+/.idea/uiDesigner.xml
+>>>>>>> telegramBot
 
