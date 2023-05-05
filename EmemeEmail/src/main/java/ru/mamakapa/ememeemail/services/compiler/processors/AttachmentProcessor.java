@@ -3,7 +3,7 @@ package ru.mamakapa.ememeemail.services.compiler.processors;
 import lombok.extern.slf4j.Slf4j;
 import ru.mamakapa.ememeemail.services.compiler.parts.AttachmentPart;
 import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
-import ru.mamakapa.ememeemail.services.compiler.utils.Translit;
+import ru.mamakapa.ememeemail.services.compiler.utils.Transliterate;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -35,7 +35,7 @@ public class AttachmentProcessor extends AbstractPartProcessor{
         if (fileName == null) {
             fileName = "NoNameAttachment" + Instant.now().toString();
         }
-        String filepath = SAVING_PATH + File.separator + Translit.cyrillicToLatin(fileName);
+        String filepath = SAVING_PATH + File.separator + Transliterate.cyrillicToLatin(fileName);
         File file = new File(filepath);
         if (!file.exists()) {
             log.info("Saving attachment " + fileName);
