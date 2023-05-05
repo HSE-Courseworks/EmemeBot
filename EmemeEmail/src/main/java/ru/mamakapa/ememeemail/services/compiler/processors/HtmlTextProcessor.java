@@ -1,10 +1,9 @@
 package ru.mamakapa.ememeemail.services.compiler.processors;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.mamakapa.ememeemail.services.compiler.utils.HtmlService;
 import ru.mamakapa.ememeemail.services.compiler.parts.HtmlPart;
 import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
+import ru.mamakapa.ememeemail.services.compiler.utils.HtmlService;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -28,8 +27,7 @@ public class HtmlTextProcessor extends AbstractPartProcessor{
             File image = tryToSaveImage(html);
             var links = HtmlService.extractLinks(html).stream().map(URI::create).collect(Collectors.toList());
             return new HtmlPart(image, links);
-        }
-        else return new AttachmentProcessor(next).process(message);
+        } else return new AttachmentProcessor(next).process(message);
     }
 
     private File tryToSaveImage(String html) throws IOException {

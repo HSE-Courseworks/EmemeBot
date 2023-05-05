@@ -14,7 +14,6 @@ import ru.mamakapa.ememeemail.services.ImapEmailService;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,12 +41,13 @@ public class JpaImapEmailService implements ImapEmailService {
     @Transactional
     public ImapEmail add(Long chatId, MessengerType messengerType, String email, String password, String host) {
         var user = findUserByChatIdAndTypeOrThrowException(chatId, messengerType);
-        var emailToSave = emailRepository.findByAddress(email).orElseGet( () ->
+        var emailToSave = emailRepository.findByAddress(email).orElseGet(() ->
                 emailRepository.save(new ImapEmailEntity(email, password, host,
                 Timestamp.from(Instant.now()), Timestamp.from(Instant.now())))
         );
         if (user.getEmails().contains(emailToSave))
-            throw new BadRequestEmemeException("Email = " + email + " was already subscribed by user with id = " + chatId);
+            throw new BadRequestEmemeException("Email = " + email +
+                    " was already subscribed by user with id = " + chatId);
 
         user.getEmails().add(emailToSave);
         userRepository.save(user);
@@ -78,7 +78,8 @@ public class JpaImapEmailService implements ImapEmailService {
     @Transactional
     public void patch(ImapEmail emailWithUpdates) {
         var emailToUpdate = emailRepository.findById(emailWithUpdates.getId()).orElseThrow(() ->
-                new NotFoundEmemeException("Email with address " + emailWithUpdates.getEmail() + " does not subscribed"));
+                new NotFoundEmemeException("Email with address " + emailWithUpdates.getEmail()
+                        + " does not subscribed"));
         emailToUpdate.setAddress(emailWithUpdates.getEmail());
         emailToUpdate.setLastUpdated(emailWithUpdates.getLastMessageTime());
         emailToUpdate.setHost(emailWithUpdates.getHost());

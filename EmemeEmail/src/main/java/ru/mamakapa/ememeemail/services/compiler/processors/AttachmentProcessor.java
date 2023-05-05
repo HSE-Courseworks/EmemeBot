@@ -1,10 +1,9 @@
 package ru.mamakapa.ememeemail.services.compiler.processors;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.mamakapa.ememeemail.services.compiler.utils.Translit;
 import ru.mamakapa.ememeemail.services.compiler.parts.AttachmentPart;
 import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
+import ru.mamakapa.ememeemail.services.compiler.utils.Translit;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -28,8 +27,7 @@ public class AttachmentProcessor extends AbstractPartProcessor{
             log.info("part is attachment");
             var file = tryToSaveAttachment(message);
             return new AttachmentPart(file);
-        }
-        else return next == null ? null : next.process(message);
+        } else return next == null ? null : next.process(message);
     }
 
     private File tryToSaveAttachment(Part message) throws MessagingException, IOException {

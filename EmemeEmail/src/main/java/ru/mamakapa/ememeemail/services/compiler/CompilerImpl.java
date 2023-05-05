@@ -3,20 +3,16 @@ package ru.mamakapa.ememeemail.services.compiler;
 import lombok.extern.slf4j.Slf4j;
 import ru.mamakapa.ememeemail.services.compiler.parts.AttachmentPart;
 import ru.mamakapa.ememeemail.services.compiler.parts.HtmlPart;
-import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
 import ru.mamakapa.ememeemail.services.compiler.parts.PlainTextPart;
 import ru.mamakapa.ememeemail.services.compiler.processors.AbstractPartProcessor;
-import ru.mamakapa.ememeemail.services.compiler.processors.AttachmentProcessor;
 import ru.mamakapa.ememeemail.services.compiler.processors.HtmlTextProcessor;
 import ru.mamakapa.ememeemail.services.compiler.processors.PlainTextProcessor;
 
 import javax.mail.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static ru.mamakapa.ememeemail.services.compiler.utils.MimeDecoder.decodeMIMEB;
@@ -37,8 +33,7 @@ public class CompilerImpl implements Compiler{
             for (int i = 0; i < mpCount; ++i){
                 buildLetter(multipart.getBodyPart(i), letter);
             }
-        }
-        else {
+        } else {
             buildLetter(message, letter);
         }
         letter.setBodyPart(bodyPartOfLetter.toString());
@@ -59,11 +54,12 @@ public class CompilerImpl implements Compiler{
 
     public String compileEnvelope(Message message) throws MessagingException {
         StringBuilder envelope = new StringBuilder();
-        Address[] addresses;
-        if ((addresses = message.getFrom()) != null){
+        Address[] addresses = message.getFrom();
+        if (addresses != null){
             envelope.append("От: ");
             for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append(" ");
+                var decodedAddress = decodeMIMEB(address.toString());
+                envelope.append(decodedAddress).append(" ");
             }
             envelope.append("\n");
         }
