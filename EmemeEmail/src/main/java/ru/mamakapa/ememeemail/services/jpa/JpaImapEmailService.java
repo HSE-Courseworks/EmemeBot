@@ -3,10 +3,7 @@ package ru.mamakapa.ememeemail.services.jpa;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
-<<<<<<< HEAD
 import ru.mamakapa.ememeemail.entities.BotUser;
-=======
->>>>>>> telegramBot
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 import ru.mamakapa.ememeemail.entities.jpa.BotUserEntity;
 import ru.mamakapa.ememeemail.entities.jpa.ImapEmailEntity;
@@ -90,7 +87,6 @@ public class JpaImapEmailService implements ImapEmailService {
         emailToUpdate.setLastChecked(emailWithUpdates.getLastChecked());
     }
 
-<<<<<<< HEAD
     @Override
     public List<BotUser> getAllSubscribedUsersForEmail(String email) {
         var checkExist = emailRepository.findByAddress(email).orElseThrow(() ->
@@ -112,8 +108,6 @@ public class JpaImapEmailService implements ImapEmailService {
         return getImapEmailFromEntity(res);
     }
 
-=======
->>>>>>> telegramBot
     private BotUserEntity findUserByChatIdAndTypeOrThrowException(Long chatId, MessengerType messengerType){
         return userRepository.findByChatIdAndType(chatId, messengerType)
                 .orElseThrow(() -> new NotFoundEmemeException("User with chatId = " + chatId +

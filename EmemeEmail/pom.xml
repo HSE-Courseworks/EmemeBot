@@ -107,6 +107,21 @@
             <artifactId>dropbox-core-sdk</artifactId>
             <version>5.4.4</version>
         </dependency>
+        <dependency>
+            <groupId>ru.mamakapa</groupId>
+            <artifactId>EmemeSenderFunctionality</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.mamakapa</groupId>
+            <artifactId>TelegramBot</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.mamakapa</groupId>
+            <artifactId>VkBot</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

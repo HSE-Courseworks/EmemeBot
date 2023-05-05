@@ -4,10 +4,6 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> telegramBot
 @Data
 @Builder
 @AllArgsConstructor
