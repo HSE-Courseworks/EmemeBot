@@ -5,5 +5,6 @@ import jakarta.validation.constraints.Email;
 public record EmailData(
         @Email
         String address,
-        String password
+        String password,
+        String host
 ) {}
