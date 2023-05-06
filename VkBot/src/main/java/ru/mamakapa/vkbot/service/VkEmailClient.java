@@ -33,13 +33,15 @@ public class VkEmailClient implements EmemeBotFunctionality {
         ememeEmailHttpClient.addEmail(
                 MessengerType.VK,
                 chatId,
-                new AddEmail(emailData.address(), emailData.password(), "")
+                new AddEmail(emailData.address(), emailData.password(), emailData.host())
         );
     }
 
     @Override
     public List<EmailData> getAllEmails(int chatId) {
-        return null;
+        return ememeEmailHttpClient
+                .getAllEmails(MessengerType.VK, chatId)
+                .emails();
     }
 
     @Override
