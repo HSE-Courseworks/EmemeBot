@@ -13,7 +13,7 @@ import ru.mamakapa.ememeSenderFunctionality.bot.dto.AddEmail;
 import ru.mamakapa.ememeSenderFunctionality.bot.dto.AllEmails;
 import ru.mamakapa.ememeSenderFunctionality.bot.dto.DeleteEmail;
 
-@HttpExchange("http://localhost:8080/")
+@HttpExchange("${functionality.email_client.url}")
 public interface EmemeEmailHttpClient {
     @PostExchange("registerChat/{messengerType}/{chatId}")
     void registerChat(
