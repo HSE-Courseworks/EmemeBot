@@ -1,4 +1,4 @@
-package ru.mamakapa.vkbot.service;
+package ru.mamakapa.vkbot.bot.function;
 
 import org.springframework.stereotype.Component;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
