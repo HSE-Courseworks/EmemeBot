@@ -1,5 +1,6 @@
 package ru.mamakapa.telegramBot.bot;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -25,7 +26,10 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
     private final CommandHandler<Message> commandHandler;
     private final CommandHandler<Message> replayedCommandHandler;
 
-    public TgBot(TelegramConfiguration tgConfig, EmemeBotFunctionality ememeBotFunctionality) {
+    public TgBot(
+            TelegramConfiguration tgConfig,
+            @Qualifier("telegramEmailClient") EmemeBotFunctionality ememeBotFunctionality
+    ) {
         super(new DefaultBotOptions(), tgConfig.token());
         this.commandHandler = new CommandHandler<>(
                 List.of(

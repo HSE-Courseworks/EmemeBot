@@ -20,7 +20,7 @@ public class PrintNewEmail extends BotCommand<Message> {
     public void execute(Message message) {
         try{
             String[] args = message.getText().trim().replaceAll("\\s+", " ").split(" ");
-            EmailData emailData = new EmailData(args[0], args[1]);
+            EmailData emailData = new EmailData(args[0], args[1], args[2]);
             ememeBotFunctionality.addEmail(Math.toIntExact(message.getChatId()), emailData);
             messageSender.send(Math.toIntExact(message.getChatId()), "Email was saved!");
         }catch (Exception ignored){}
