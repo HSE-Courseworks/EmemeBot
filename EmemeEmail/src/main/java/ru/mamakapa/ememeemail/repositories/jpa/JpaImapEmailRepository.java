@@ -13,7 +13,12 @@ import java.util.Optional;
 public interface JpaImapEmailRepository extends JpaRepository<ImapEmailEntity, Long> {
     Optional<ImapEmailEntity> findByAddress(String address);
     @Query(value =
-            "select u.id from botemail be inner join botuser as u on be.botuser_id = u.id inner join imapemail e on e.id = be.email_id where e.address = :email",
+            """
+            select u.id from botemail be
+            inner join botuser as u on be.botuser_id = u.id
+            inner join imapemail e on e.id = be.email_id
+            where e.address = :email
+            """,
             nativeQuery = true)
     List<Long> getAllIdsOfUsersSubscribedOnLink(@Param("email") String email);
 
