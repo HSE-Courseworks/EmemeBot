@@ -7,6 +7,7 @@ import ru.mamakapa.telegramBot.bot.TgBot;
 public class AddEmailCommand extends BotCommand<Message> {
     public static final String NEW_EMAIL_TEXT =
             "Enter your email Address, Password and Host through Space with Replying to this message";
+    private static final String PLACEHOLDER_NEW_EMAIL_MESSAGE = "myemail@host.com ************ imap.host.ru";
     private final TgBot tgBot;
 
     public AddEmailCommand(TgBot tgBot) {
@@ -19,7 +20,7 @@ public class AddEmailCommand extends BotCommand<Message> {
         tgBot.sendMessageWithReply(
                 Math.toIntExact(message.getChatId()),
                 NEW_EMAIL_TEXT,
-                "myemail@host.com ************"
+                PLACEHOLDER_NEW_EMAIL_MESSAGE
         );
     }
 }
