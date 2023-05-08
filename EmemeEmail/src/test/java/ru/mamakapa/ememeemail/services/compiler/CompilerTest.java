@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.mamakapa.ememeemail.IntegrationEnvironment;
+import ru.mamakapa.ememeemail.configurations.ApplicationConfig;
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 
@@ -19,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CompilerTest extends IntegrationEnvironment {
     @Autowired
     EmailConnection connection;
+    @Autowired
+    ApplicationConfig applicationConfig;
 
     Path path = Paths.get("src/main/resources/savedir").normalize().toAbsolutePath();
 
@@ -28,9 +31,9 @@ class CompilerTest extends IntegrationEnvironment {
     public void compile() throws MessagingException, IOException {
         //given
         var email = ImapEmail.builder()
-                .email("ememebot@yandex.ru")
-                .appPassword("haoagtumanaptkfa")
-                .host("imap.yandex.ru")
+                .email(applicationConfig.test().email())
+                .appPassword(applicationConfig.test().password())
+                .host(applicationConfig.test().host())
                 .botId(888L)
                 .id(13L)
                 .build();
