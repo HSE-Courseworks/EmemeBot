@@ -25,14 +25,15 @@ public class PrintNewEmailAddress extends BotCommand<Message> {
     public void execute(Message message) {
         try {
             Map<String, String> userData = gson.fromJson(message.getReplyMessage().getPayload(), Map.class);
-            vkBot.sendMessageWithPayload(message.getPeerId(), SEND_NEW_PASSWORD, String.format(
+            vkBot.sendMessageWithPayload(message.getPeerId(), SEND_NEW_PASSWORD,
                     """
                     {
                         "email_address":"%s",
                         "chat_id":"%s"
                     }
                     """.formatted(message.getText(), userData.get("chat_id"))
-            ));
-        } catch (ClientException | ApiException ignored) {}
+            );
+        } catch (ClientException | ApiException ignored) {
+        }
     }
 }
