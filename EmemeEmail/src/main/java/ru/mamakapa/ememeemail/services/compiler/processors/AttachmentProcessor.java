@@ -10,14 +10,15 @@ import javax.mail.Part;
 import javax.mail.internet.MimeBodyPart;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Instant;
 
 import static ru.mamakapa.ememeemail.services.compiler.utils.MimeDecoder.decodeMIMEB;
 
 @Slf4j
 public class AttachmentProcessor extends AbstractPartProcessor{
-    public AttachmentProcessor(AbstractPartProcessor next) {
-        super(next);
+    public AttachmentProcessor(AbstractPartProcessor next, Path savingPath) {
+        super(next, savingPath);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class AttachmentProcessor extends AbstractPartProcessor{
         if (fileName == null) {
             fileName = "NoNameAttachment" + Instant.now().toString();
         }
-        String filepath = SAVING_PATH + File.separator + Transliterate.cyrillicToLatin(fileName);
+        String filepath = savingPath + File.separator + Translit.cyrillicToLatin(fileName);
         File file = new File(filepath);
         if (!file.exists()) {
             log.info("Saving attachment " + fileName);

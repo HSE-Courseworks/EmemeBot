@@ -7,11 +7,12 @@ import ru.mamakapa.ememeemail.services.compiler.parts.PlainTextPart;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import java.io.IOException;
+import java.nio.file.Path;
 
 @Slf4j
 public class PlainTextProcessor extends AbstractPartProcessor{
-    public PlainTextProcessor(AbstractPartProcessor next) {
-        super(next);
+    public PlainTextProcessor(AbstractPartProcessor next, Path savingPath) {
+        super(next, savingPath);
     }
 
     @Override
@@ -20,6 +21,6 @@ public class PlainTextProcessor extends AbstractPartProcessor{
             log.info("part is plain text");
             String content = (String) message.getContent();
             return new PlainTextPart(content);
-        } else return new AttachmentProcessor(next).process(message);
+        } else return new AttachmentProcessor(next, savingPath).process(message);
     }
 }

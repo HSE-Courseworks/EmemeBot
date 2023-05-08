@@ -10,13 +10,7 @@ import java.nio.file.Path;
 
 public abstract class AbstractPartProcessor {
 
-    protected final static Path SAVING_PATH = new File(".").toPath()
-            .toAbsolutePath()
-            .getParent()
-            .resolve("src")
-            .resolve("main")
-            .resolve("resources")
-            .resolve("savedir");
+    protected final Path savingPath;
 
     protected AbstractPartProcessor next;
 
@@ -25,7 +19,8 @@ public abstract class AbstractPartProcessor {
         return this.next;
     }
 
-    public AbstractPartProcessor(AbstractPartProcessor next){
+    public AbstractPartProcessor(AbstractPartProcessor next, Path savingPath){
+        this.savingPath = savingPath;
         this.next = next;
     }
 

@@ -3,6 +3,7 @@ package ru.mamakapa.ememeemail.services.jpa;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
+import ru.mamakapa.ememeemail.entities.BotUser;
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 import ru.mamakapa.ememeemail.entities.jpa.BotUserEntity;
 import ru.mamakapa.ememeemail.entities.jpa.ImapEmailEntity;
@@ -85,6 +86,27 @@ public class JpaImapEmailService implements ImapEmailService {
         emailToUpdate.setHost(emailWithUpdates.getHost());
         emailToUpdate.setPassword(emailWithUpdates.getAppPassword());
         emailToUpdate.setLastChecked(emailWithUpdates.getLastChecked());
+    }
+
+    @Override
+    public List<BotUser> getAllSubscribedUsersForEmail(String email) {
+        var checkExist = emailRepository.findByAddress(email).orElseThrow(() ->
+                new NotFoundEmemeException("Email with address " + email + " does not subscribed"));
+        var res = userRepository.findAllById(emailRepository.getAllIdsOfUsersSubscribedOnLink(email));
+        return res.stream()
+                .map(u -> BotUser.builder()
+                        .id(u.getId())
+                        .chatId(u.getChatId())
+                        .messengerType(u.getType())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ImapEmail getLatestCheckedEmail() {
+        var res = emailRepository.getLatestCheckedEmail().orElseThrow(() ->
+                new BadRequestEmemeException("No emails were subscribed"));
+        return getImapEmailFromEntity(res);
     }
 
     private BotUserEntity findUserByChatIdAndTypeOrThrowException(Long chatId, MessengerType messengerType){

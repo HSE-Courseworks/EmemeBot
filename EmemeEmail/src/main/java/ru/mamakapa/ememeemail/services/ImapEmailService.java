@@ -1,6 +1,7 @@
 package ru.mamakapa.ememeemail.services;
 
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
+import ru.mamakapa.ememeemail.entities.BotUser;
 import ru.mamakapa.ememeemail.entities.ImapEmail;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface ImapEmailService {
 
     void patch(ImapEmail emailWithUpdates);
 
+    List<BotUser> getAllSubscribedUsersForEmail(String email);
+
+    ImapEmail getLatestCheckedEmail();
 }

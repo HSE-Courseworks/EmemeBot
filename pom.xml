@@ -3,17 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.mamakapa</groupId>
-    <artifactId>EmemeBot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>VkBot</module>
-        <module>EmemeSenderFunctionality</module>
-        <module>TelegramBot</module>
-        <module>EmemeEmail</module>
-        <module>VkBot</module>
-    </modules>
+<groupId>ru.mamakapa</groupId>
+<artifactId>EmemeBot</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<packaging>pom</packaging>
+<modules>
+    <module>EmemeSenderFunctionality</module>
+    <module>TelegramBot</module>
+    <module>EmemeEmail</module>
+    <module>VkBot</module>
+</modules>
 
     <properties>
         <java.version>17</java.version>
@@ -141,6 +140,16 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
         </plugins>
     </reporting>

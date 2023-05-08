@@ -11,6 +11,7 @@ import ru.mamakapa.ememeemail.services.compiler.processors.PlainTextProcessor;
 import javax.mail.*;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +20,13 @@ import static ru.mamakapa.ememeemail.services.compiler.utils.MimeDecoder.decodeM
 
 @Slf4j
 public class CompilerImpl implements Compiler{
-    private final AbstractPartProcessor processor = new HtmlTextProcessor(new PlainTextProcessor(null));
+    private final AbstractPartProcessor processor;
 
     private final StringBuilder bodyPartOfLetter = new StringBuilder();
+
+    public CompilerImpl(Path savingPath) {
+        this.processor = new HtmlTextProcessor(new PlainTextProcessor(null, savingPath), savingPath);
+    }
 
     @Override
     public EmailLetter compile(Message message) throws MessagingException, IOException {
