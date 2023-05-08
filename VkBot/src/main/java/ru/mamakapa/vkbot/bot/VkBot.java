@@ -7,6 +7,7 @@ import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
@@ -15,6 +16,7 @@ import ru.mamakapa.ememeSenderFunctionality.bot.service.*;
 import ru.mamakapa.vkbot.bot.command.*;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
+import ru.mamakapa.vkbot.bot.command.replayed.PrintNewHost;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
 import ru.mamakapa.vkbot.config.VkBotConfig;
@@ -35,17 +37,21 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     private final CommandHandler<Message> replayedCommandHandler;
     private final Keyboard commandButtonsKeyboard;
 
-    public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
+    public VkBot(
+            VkBotConfig config,
+            @Qualifier("vkEmailClient") EmemeBotFunctionality ememeBotFunctionality
+    ) {
         Gson gson = new Gson();
         this.vkApiClient = new VkApiClient(new HttpTransportClient());
         this.groupActor = new GroupActor(config.groupId(), config.token());
         this.callbackHandler = new CallbackHandler(config.callback().confirmationCode(), config.callback().secret()) {
             @Override
             protected void messageNew(Integer groupId, Message message) {
-                try{
+                try {
                     handleReplayedMessage(message);
                     commandHandler.handle(message);
-                }catch (NonHandleCommandException ignored){}
+                } catch (NonHandleCommandException ignored) {
+                }
             }
         };
         this.commandHandler = new CommandHandler<>(
@@ -62,16 +68,17 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
                 List.of(
                         new PrintNewEmailAddress(this, gson),
                         new PrintNewPassword(ememeBotFunctionality, this, gson),
-                        new PrintEmailForRemoving(gson, ememeBotFunctionality, this)
+                        new PrintEmailForRemoving(gson, ememeBotFunctionality, this),
+                        new PrintNewHost(this, ememeBotFunctionality, gson)
                 ),
                 message -> message.getReplyMessage().getText()
         );
         this.commandButtonsKeyboard = new Keyboard();
         List<String> commands = commandHandler.getAllCommands().limit(MAX_SIZE_KEYBOARD_BUTTONS).toList();
         List<List<KeyboardButton>> buttons = new ArrayList<>();
-        for(int i = 0; i<commands.size()/MAX_COLUMN_COUNT; i++){
+        for (int i = 0; i < commands.size() / MAX_COLUMN_COUNT; i++) {
             List<KeyboardButton> buttonList = new ArrayList<>();
-            for(int j=i*MAX_COLUMN_COUNT; j<(i+1)*MAX_COLUMN_COUNT&&j<commands.size(); j++){
+            for (int j = i * MAX_COLUMN_COUNT; j < (i + 1) * MAX_COLUMN_COUNT && j < commands.size(); j++) {
                 KeyboardButton keyboardButton = new KeyboardButton();
                 KeyboardButtonAction action = new KeyboardButtonAction();
                 action.setLabel(commands.get(j));
@@ -87,7 +94,7 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     }
 
     private void handleReplayedMessage(Message message) throws NonHandleCommandException {
-        if(message.getReplyMessage()!=null){
+        if (message.getReplyMessage() != null) {
             replayedCommandHandler.handle(message);
         }
     }
@@ -98,7 +105,7 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     }
 
     @Override
-    public void send(Integer chatId, String messageText) throws Exception{
+    public void send(Integer chatId, String messageText) throws Exception {
         sendMessageText(chatId, messageText);
     }
 

@@ -72,7 +72,6 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
             commandHandler.handle(update.getMessage());
         }
     }
-
     @Override
     public void send(Integer chatId, String message) throws Exception {
         execute(new SendMessage(String.valueOf(chatId), message));
@@ -88,5 +87,4 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
         } catch (TelegramApiException ignored) {
         }
     }
-
 }
