@@ -75,7 +75,8 @@ public class CompilerImpl implements Compiler{
         return envelope.toString();
     }
 
-    private void buildLetter(Part part, EmailLetter letter, StringBuilder bodyBuilder) throws MessagingException, IOException {
+    private void buildLetter(Part part, EmailLetter letter, StringBuilder bodyBuilder)
+            throws MessagingException, IOException {
         switch (processor.process(part)){
             case HtmlPart htmlPart -> {
                 letter.getFiles().add(htmlPart.image());
