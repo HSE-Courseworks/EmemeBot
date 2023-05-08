@@ -1,6 +1,9 @@
 server:
   port: 9999
 
+service:
+  emailUrl: ${EMAIL_URL:http://localhost:8080}
+
 bot:
   telegram:
     token: ${BOT_TOKEN}
