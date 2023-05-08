@@ -39,31 +39,36 @@ public class EmailNotifier {
 
     @Scheduled(fixedDelay = UPDATE_CHECK_INTERVAL)
     public void checkUpdateAndNotify(){
+        var emailToCheck = emailService.getLatestCheckedEmail();
         try {
-            var emailToCheck = emailService.getLatestCheckedEmail();
             log.info("Checking for updates of " + emailToCheck.getEmail());
             connectToEmail(emailToCheck);
 
             checkForMessagesSendThemAndGetLastMessageTime(emailToCheck)
                     .ifPresent(emailToCheck::setLastMessageTime);
 
+        } catch (Exception ex){
+            log.info(ex.getMessage());
+        } finally {
             emailToCheck.setLastChecked(Timestamp.from(Instant.now()));
             emailService.patch(emailToCheck);
-        }catch (Exception ex){
-            log.info(ex.getMessage());
+            log.info("{} was checked", emailToCheck.getEmail());
         }
     }
 
     private Optional<Timestamp> checkForMessagesSendThemAndGetLastMessageTime(ImapEmail emailToCheck)
             throws MessagingException {
         var optionalLetters = emailConnection.getNewLetters(emailToCheck);
-        if (optionalLetters.isPresent()) {
+        if (optionalLetters.isPresent() && !optionalLetters.get().isEmpty()) {
             var l = optionalLetters.get();
             log.info("{} letters were found!", l.size());
             var processedMessages = processNewMessages(l);
             sendLettersToUsers(emailToCheck, processedMessages);
             return Optional.of(Timestamp.from(l.get(l.size()-1).getSentDate().toInstant()));
-        } else return Optional.empty();
+        } else {
+            log.info("There are no new letters");
+            return Optional.empty();
+        }
     }
 
     private void connectToEmail(ImapEmail email) throws MessagingException {
