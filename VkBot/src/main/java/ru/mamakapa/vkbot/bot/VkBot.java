@@ -7,6 +7,7 @@ import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
@@ -15,6 +16,7 @@ import ru.mamakapa.ememeSenderFunctionality.bot.service.*;
 import ru.mamakapa.vkbot.bot.command.*;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
+import ru.mamakapa.vkbot.bot.command.replayed.PrintNewHost;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewPassword;
 import ru.mamakapa.vkbot.bot.handler.CallbackHandler;
 import ru.mamakapa.vkbot.config.VkBotConfig;
@@ -35,7 +37,10 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
     private final CommandHandler<Message> replayedCommandHandler;
     private final Keyboard commandButtonsKeyboard;
 
-    public VkBot(VkBotConfig config, EmemeBotFunctionality ememeBotFunctionality) {
+    public VkBot(
+            VkBotConfig config,
+            @Qualifier("vkEmailClient") EmemeBotFunctionality ememeBotFunctionality
+    ) {
         Gson gson = new Gson();
         this.vkApiClient = new VkApiClient(new HttpTransportClient());
         this.groupActor = new GroupActor(config.groupId(), config.token());
@@ -63,7 +68,8 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
                 List.of(
                         new PrintNewEmailAddress(this, gson),
                         new PrintNewPassword(ememeBotFunctionality, this, gson),
-                        new PrintEmailForRemoving(gson, ememeBotFunctionality, this)
+                        new PrintEmailForRemoving(gson, ememeBotFunctionality, this),
+                        new PrintNewHost(this, ememeBotFunctionality, gson)
                 ),
                 message -> message.getReplyMessage().getText()
         );

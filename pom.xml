@@ -8,12 +8,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
+        <module>VkBot</module>
         <module>EmemeSenderFunctionality</module>
         <module>TelegramBot</module>
         <module>EmemeEmail</module>
         <module>VkBot</module>
     </modules>
-
 
     <properties>
         <java.version>17</java.version>
