@@ -3,29 +3,30 @@ package ru.mamakapa.ememeemail.services.compiler;
 import lombok.extern.slf4j.Slf4j;
 import ru.mamakapa.ememeemail.services.compiler.parts.AttachmentPart;
 import ru.mamakapa.ememeemail.services.compiler.parts.HtmlPart;
-import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
 import ru.mamakapa.ememeemail.services.compiler.parts.PlainTextPart;
 import ru.mamakapa.ememeemail.services.compiler.processors.AbstractPartProcessor;
-import ru.mamakapa.ememeemail.services.compiler.processors.AttachmentProcessor;
 import ru.mamakapa.ememeemail.services.compiler.processors.HtmlTextProcessor;
 import ru.mamakapa.ememeemail.services.compiler.processors.PlainTextProcessor;
 
 import javax.mail.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static ru.mamakapa.ememeemail.services.compiler.utils.MimeDecoder.decodeMIMEB;
 
 @Slf4j
 public class CompilerImpl implements Compiler{
-    private final AbstractPartProcessor processor = new HtmlTextProcessor(new PlainTextProcessor(null));
+    private final AbstractPartProcessor processor;
 
     private final StringBuilder bodyPartOfLetter = new StringBuilder();
+
+    public CompilerImpl(Path savingPath) {
+        this.processor = new HtmlTextProcessor(new PlainTextProcessor(null, savingPath), savingPath);
+    }
 
     @Override
     public EmailLetter compile(Message message) throws MessagingException, IOException {

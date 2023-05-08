@@ -69,7 +69,8 @@ class JpaImapEmailServiceTest extends IntegrationEnvironment {
                 () -> assertEquals("jjdjasjajja", emailRepository.findByAddress("emmebot@yandex.ru").get().getPassword()),
                 () -> assertEquals(2, userVK.getEmails().size()),
                 () -> assertEquals(testEmail.getId(), userRepository.findByChatIdAndType(888L, MessengerType.TG).get().getEmails().get(0).getId()),
-                () -> assertEquals(2, emailRepository.findAll().size())
+                () -> assertEquals(2, emailRepository.findAll().size()),
+                () -> assertEquals(2, emailService.getAllSubscribedUsersForEmail("emmebot@yandex.ru").size())
         );
     }
 
@@ -187,5 +188,30 @@ class JpaImapEmailServiceTest extends IntegrationEnvironment {
 
         //then
         assertTrue(res.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void noEmailsGetLatest(){
+        try {
+            emailService.getLatestCheckedEmail();
+            fail();
+        } catch (BadRequestEmemeException e){
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void getLatestCheckedEmail(){
+        userService.register(888L, MessengerType.TG);
+        var latest = emailService.add(888L, MessengerType.TG, "dadad@emai.com", "sdads" ,"saddad");
+        emailService.add(888L, MessengerType.TG, "akkakakak@emai.com", "sdads" ,"saddad");
+        emailService.add(888L, MessengerType.TG, "wkeekwke@eee.com", "sdads" ,"saddad");
+
+        var res = emailService.getLatestCheckedEmail();
+        assertEquals(latest, res);
     }
 }

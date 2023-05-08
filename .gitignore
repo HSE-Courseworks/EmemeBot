@@ -4,6 +4,7 @@ EmemeBotLogs.log
 
 #project
 src/main/resources/*
+EmemeEmail/src/main/resources/*
 !src/main/resources/application-test.properties
 HELP.md
 target/
@@ -53,4 +54,6 @@ buildNumber.properties
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+
 /.idea/uiDesigner.xml
+
