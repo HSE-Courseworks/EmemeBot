@@ -36,7 +36,7 @@ public class AttachmentProcessor extends AbstractPartProcessor{
         if (fileName == null) {
             fileName = "NoNameAttachment" + Instant.now().toString();
         }
-        String filepath = savingPath + File.separator + Translit.cyrillicToLatin(fileName);
+        String filepath = savingPath + File.separator + Transliterate.cyrillicToLatin(fileName);
         File file = new File(filepath);
         if (!file.exists()) {
             log.info("Saving attachment " + fileName);
