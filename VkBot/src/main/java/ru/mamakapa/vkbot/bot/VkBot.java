@@ -109,7 +109,11 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
         sendMessageText(chatId, messageText);
     }
 
-    public void sendMessageWithPayload(int chatId, String message, String payload) throws ClientException, ApiException {
+    public void sendMessageWithPayload(
+            int chatId,
+            String message,
+            String payload
+    ) throws ClientException, ApiException {
         vkApiClient.messages()
                 .send(groupActor)
                 .message(message)

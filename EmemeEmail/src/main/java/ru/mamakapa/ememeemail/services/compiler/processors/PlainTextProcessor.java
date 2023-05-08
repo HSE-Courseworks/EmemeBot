@@ -21,7 +21,6 @@ public class PlainTextProcessor extends AbstractPartProcessor{
             log.info("part is plain text");
             String content = (String) message.getContent();
             return new PlainTextPart(content);
-        }
-        else return new AttachmentProcessor(next, savingPath).process(message);
+        } else return new AttachmentProcessor(next, savingPath).process(message);
     }
 }

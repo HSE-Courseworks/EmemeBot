@@ -35,7 +35,7 @@ public class HtmlService {
     }
 
     static public File saveHtmlAsImage(String html, String imageFilePath) throws IOException {
-        return saveHtmlAsImage(parseHTMLToXML(html),imageFilePath);
+        return saveHtmlAsImage(parseHTMLToXML(html), imageFilePath);
     }
 
     static public File saveHtmlAsImage(org.jsoup.nodes.Document xhtml, String imageFilePath) throws IOException {

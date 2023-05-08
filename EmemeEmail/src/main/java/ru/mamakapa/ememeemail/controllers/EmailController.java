@@ -15,8 +15,6 @@ import ru.mamakapa.ememeemail.DTOs.responses.ApiErrorResponse;
 import ru.mamakapa.ememeemail.DTOs.responses.EmailResponse;
 import ru.mamakapa.ememeemail.services.ImapEmailService;
 
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/emails")
 public class EmailController {

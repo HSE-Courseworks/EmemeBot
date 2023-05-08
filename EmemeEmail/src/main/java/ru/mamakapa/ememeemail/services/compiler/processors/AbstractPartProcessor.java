@@ -4,7 +4,6 @@ import ru.mamakapa.ememeemail.services.compiler.parts.MessagePart;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

@@ -4,9 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
 import ru.mamakapa.ememeemail.entities.jpa.BotUserEntity;
-import ru.mamakapa.ememeemail.entities.jpa.ImapEmailEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

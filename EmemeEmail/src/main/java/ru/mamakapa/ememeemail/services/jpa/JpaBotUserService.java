@@ -9,8 +9,6 @@ import ru.mamakapa.ememeemail.exceptions.NotFoundEmemeException;
 import ru.mamakapa.ememeemail.repositories.jpa.JpaBotUserRepository;
 import ru.mamakapa.ememeemail.services.BotUserService;
 
-import java.util.ArrayList;
-
 @Service
 public class JpaBotUserService implements BotUserService {
 
@@ -27,9 +25,9 @@ public class JpaBotUserService implements BotUserService {
             userRepository.save(new BotUserEntity(chatId, messengerType));
         } catch (Exception e){
             throw new BadRequestEmemeException(
-                    String.format("User with id = %d and messenger type = %s already registered", chatId, messengerType));
+                    String.format("User with id = %d and messenger type = %s already registered",
+                            chatId, messengerType));
         }
-
     }
 
     @Override
@@ -38,7 +36,8 @@ public class JpaBotUserService implements BotUserService {
         var deleteResult = userRepository.deleteByChatIdAndType(chatId, messengerType);
         if (deleteResult.equals(0)){
             throw new NotFoundEmemeException(
-                    String.format("User with id = %d and messenger type = %s does not registered", chatId, messengerType));
+                    String.format("User with id = %d and messenger type = %s does not registered",
+                            chatId, messengerType));
         }
     }
 }

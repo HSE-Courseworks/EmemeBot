@@ -5,8 +5,10 @@ import ru.mamakapa.ememeSenderFunctionality.bot.command.BotCommand;
 import ru.mamakapa.vkbot.bot.VkBot;
 
 public class DeleteEmailCommand extends BotCommand<Message> {
-    public final static String DELETE_EMAIL_MESSAGE = "Print your email address for removing with replying to this message";
+    public final static String DELETE_EMAIL_MESSAGE =
+            "Print your email address for removing with replying to this message";
     private final VkBot vkBot;
+
     public DeleteEmailCommand(VkBot vkBot) {
         super("/deleteEmail");
         this.vkBot = vkBot;
@@ -22,6 +24,7 @@ public class DeleteEmailCommand extends BotCommand<Message> {
                                 "chat_id":"%d"
                             }
                             """.formatted(message.getPeerId()));
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

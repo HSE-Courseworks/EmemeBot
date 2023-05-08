@@ -38,8 +38,7 @@ public class CompilerImpl implements Compiler{
             for (int i = 0; i < mpCount; ++i){
                 buildLetter(multipart.getBodyPart(i), letter);
             }
-        }
-        else {
+        } else {
             buildLetter(message, letter);
         }
         letter.setBodyPart(bodyPartOfLetter.toString());
@@ -60,11 +59,12 @@ public class CompilerImpl implements Compiler{
 
     public String compileEnvelope(Message message) throws MessagingException {
         StringBuilder envelope = new StringBuilder();
-        Address[] addresses;
-        if ((addresses = message.getFrom()) != null){
+        Address[] addresses = message.getFrom();
+        if (addresses != null){
             envelope.append("От: ");
             for (Address address : addresses) {
-                envelope.append(decodeMIMEB(address.toString())).append(" ");
+                var decodedAddress = decodeMIMEB(address.toString());
+                envelope.append(decodedAddress).append(" ");
             }
             envelope.append("\n");
         }
