@@ -9,7 +9,11 @@ import ru.mamakapa.telegramBot.bot.command.DeleteEmailCommand;
 public class PrintEmailForRemoving extends BotCommand<Message> {
     private final EmemeBotFunctionality ememeBotFunctionality;
     private final MessageSender<Integer, String> messageSender;
-    public PrintEmailForRemoving(EmemeBotFunctionality ememeBotFunctionality, MessageSender<Integer, String> messageSender) {
+
+    public PrintEmailForRemoving(
+            EmemeBotFunctionality ememeBotFunctionality,
+            MessageSender<Integer, String> messageSender
+    ) {
         super(DeleteEmailCommand.DELETE_EMAIL_TEXT);
         this.ememeBotFunctionality = ememeBotFunctionality;
         this.messageSender = messageSender;
@@ -20,6 +24,7 @@ public class PrintEmailForRemoving extends BotCommand<Message> {
         try {
             ememeBotFunctionality.deleteEmail(Math.toIntExact(message.getChatId()), message.getText());
             messageSender.send(Math.toIntExact(message.getChatId()), "Email was removed!");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

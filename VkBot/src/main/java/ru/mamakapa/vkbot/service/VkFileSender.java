@@ -24,7 +24,7 @@ public class VkFileSender implements FileSender {
     private final GroupActor groupActor;
     private final VkApiClient vkApiClient = new VkApiClient(new HttpTransportClient());
     private final Random random = new Random();
-    private static final Set<String> fileExtensionsDenied = new HashSet<>(Arrays.asList(
+    private static final Set<String> FILE_EXTENSIONS_DENIED = new HashSet<>(Arrays.asList(
             "exe",
             "mp3"
     ));
@@ -52,7 +52,8 @@ public class VkFileSender implements FileSender {
         }
     }
 
-    private String getUploadDocAttach(int chatId, File file) throws FileNotFoundException, ClientException, ApiException {
+    private String getUploadDocAttach(int chatId, File file)
+            throws FileNotFoundException, ClientException, ApiException {
         log.info("Uploading document in attachments");
         String fileExtension = getExtension(file.getName());
         if (fileExtensionDenied(fileExtension)) {
@@ -86,7 +87,7 @@ public class VkFileSender implements FileSender {
     }
 
     private boolean fileExtensionDenied(String extension) {
-        return fileExtensionsDenied.contains(extension);
+        return FILE_EXTENSIONS_DENIED.contains(extension);
     }
 
     private int getRandomId() {
