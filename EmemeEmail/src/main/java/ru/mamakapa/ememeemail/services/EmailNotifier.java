@@ -54,16 +54,16 @@ public class EmailNotifier {
         }
     }
 
-    private Optional<Timestamp> checkForMessagesSendThemAndGetLastMessageTime(ImapEmail emailToCheck) throws MessagingException {
+    private Optional<Timestamp> checkForMessagesSendThemAndGetLastMessageTime(ImapEmail emailToCheck)
+            throws MessagingException {
         var optionalLetters = emailConnection.getNewLetters(emailToCheck);
-        if (optionalLetters.isPresent()){
+        if (optionalLetters.isPresent()) {
             var l = optionalLetters.get();
             log.info("{} letters were found!", l.size());
             var processedMessages = processNewMessages(l);
             sendLettersToUsers(emailToCheck, processedMessages);
             return Optional.of(Timestamp.from(l.get(l.size()-1).getSentDate().toInstant()));
-        }
-        else return Optional.empty();
+        } else return Optional.empty();
     }
 
     private void connectToEmail(ImapEmail email) throws MessagingException {
