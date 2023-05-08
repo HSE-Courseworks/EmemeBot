@@ -56,7 +56,7 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
         try {
             handleReplayedMessage(update);
             handleMessage(update);
-        } catch (TelegramApiException | NonHandleCommandException ignored) {
+        } catch (Exception ignored) {
         }
         return "OK";
     }
@@ -67,7 +67,7 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
         }
     }
 
-    private void handleMessage(Update update) throws TelegramApiException, NonHandleCommandException {
+    private void handleMessage(Update update) throws NonHandleCommandException {
         if (update.hasMessage() && update.getMessage().hasText()) {
             commandHandler.handle(update.getMessage());
         }
