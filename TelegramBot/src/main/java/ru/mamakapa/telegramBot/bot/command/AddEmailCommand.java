@@ -6,7 +6,7 @@ import ru.mamakapa.telegramBot.bot.TgBot;
 
 public class AddEmailCommand extends BotCommand<Message> {
     public static final String NEW_EMAIL_TEXT =
-            "Enter your email address and password through space with replying to this message";
+            "Enter your email Address, Password and Host through Space with Replying to this message";
     private final TgBot tgBot;
 
     public AddEmailCommand(TgBot tgBot) {
