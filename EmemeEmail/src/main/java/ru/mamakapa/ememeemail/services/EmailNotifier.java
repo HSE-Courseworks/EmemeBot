@@ -38,8 +38,9 @@ public class EmailNotifier {
 
     @Scheduled(fixedDelay = UPDATE_CHECK_INTERVAL)
     public void checkUpdateAndNotify(){
-        var emailToCheck = emailService.getLatestCheckedEmail();
+        ImapEmail emailToCheck = null;
         try {
+            emailToCheck = emailService.getLatestCheckedEmail();;
             log.info("Checking for updates of " + emailToCheck.getEmail());
             connectToEmail(emailToCheck);
 
@@ -49,9 +50,11 @@ public class EmailNotifier {
         } catch (Exception ex){
             log.info(ex.getMessage());
         } finally {
-            emailToCheck.setLastChecked(Timestamp.from(Instant.now()));
-            emailService.patch(emailToCheck);
-            log.info("{} was checked", emailToCheck.getEmail());
+            if (emailToCheck != null) {
+                emailToCheck.setLastChecked(Timestamp.from(Instant.now()));
+                emailService.patch(emailToCheck);
+                log.info("{} was checked", emailToCheck.getEmail());
+            }
         }
     }
 
@@ -102,7 +105,6 @@ public class EmailNotifier {
             LetterContent content = getLetterContent(letter);
             for (var user : users){
                 updateSender.sendUpdate(user, content);
-                fileUploader.uploadFilesToUser(user, letter.getFiles());
             }
             compiler.deleteLetterFiles(letter);
         }
@@ -111,6 +113,7 @@ public class EmailNotifier {
     private LetterContent getLetterContent(EmailLetter letter){
         return LetterContent.builder()
                 .messageContent(letter.getEnvelope() + "\n" + letter.getBodyPart())
+                .bucketFileNames(fileUploader.uploadFiles(letter.getFiles()))
                 .build();
     }
 }
