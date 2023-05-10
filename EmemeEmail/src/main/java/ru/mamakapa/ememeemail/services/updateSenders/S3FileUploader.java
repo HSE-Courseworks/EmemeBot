@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.mamakapa.ememeemail.services.StorageService;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,8 @@ import java.util.List;
 public class S3FileUploader implements FileUploader{
 
     private final AmazonS3Client s3Client;
+
+    private final StorageService storageService;
 
     @Value("${aws.bucketName}")
     private String bucketName;
@@ -34,8 +39,11 @@ public class S3FileUploader implements FileUploader{
 
     private String uploadFile(File file) {
         String s3SavingDir = file.getName();
+        log.info("saving file {}", s3SavingDir);
         s3Client.putObject(new PutObjectRequest(bucketName, s3SavingDir, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
+        storageService.store(s3SavingDir, Timestamp.from(Instant.now()));
+        log.info("file was saved successfully");
         return s3SavingDir;
     }
 }

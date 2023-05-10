@@ -40,7 +40,7 @@ public class EmailNotifier {
     public void checkUpdateAndNotify(){
         ImapEmail emailToCheck = null;
         try {
-            emailToCheck = emailService.getLatestCheckedEmail();;
+            emailToCheck = emailService.getLatestCheckedEmail();
             log.info("Checking for updates of " + emailToCheck.getEmail());
             connectToEmail(emailToCheck);
 

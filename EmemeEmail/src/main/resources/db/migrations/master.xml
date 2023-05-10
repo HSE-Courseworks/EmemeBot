@@ -11,5 +11,6 @@
     <include file="create_db_for_email_service/bot_user.sql"/>
     <include file="create_db_for_email_service/imap_email.sql"/>
     <include file="create_db_for_email_service/botEmail.sql"/>
+    <include file="create_s3_schema_to_manage_store_objects/storage_table.sql"/>
 
 </databaseChangeLog>
