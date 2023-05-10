@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface JpaStorageRepository extends JpaRepository<StorageEntity, String> {
-    @Query(value = "SELECT * FROM storage as s WHERE :cur_time - s.save_time > INTERVAL '2' HOUR",
+    @Query(value = "SELECT * FROM storage as s WHERE :cur_time - s.save_time >= INTERVAL '2' HOUR",
             nativeQuery = true)
     List<StorageEntity> getAllFilesAfter2HoursFromTime(@Param("cur_time") Timestamp timestamp);
 }

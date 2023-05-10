@@ -39,7 +39,7 @@ public class S3FileUploader implements FileUploader{
 
     private String uploadFile(File file) {
         String s3SavingDir = file.getName();
-        log.info("saving file {}", s3SavingDir);
+        log.info("saving file {}", file);
         s3Client.putObject(new PutObjectRequest(bucketName, s3SavingDir, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         storageService.store(s3SavingDir, Timestamp.from(Instant.now()));
