@@ -8,3 +8,8 @@ bot:
 springdoc:
   swagger-ui:
     path: swagger-ui
+
+kafka:
+  serverUrl: ${KAFKA_SERVER_URL:localhost:9092}
+  topicName: ${KAFKA_TOPIC_NAME:TelegramUpdate}
+  isEnabled: true
