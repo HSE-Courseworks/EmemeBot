@@ -7,7 +7,7 @@ import ru.mamakapa.telegramBot.data.LetterToUser;
 import ru.mamakapa.telegramBot.service.LetterToUserHandler;
 
 @RestController
-@ConditionalOnProperty(prefix = "kafka", name = "isEnabled", havingValue = "false")
+@ConditionalOnProperty(prefix = "http.controller", name = "isEnabled", havingValue = "true")
 @RequestMapping("tgbot/updates")
 public class TelegramMessageSenderController {
     private final LetterToUserHandler letterToUserHandler;

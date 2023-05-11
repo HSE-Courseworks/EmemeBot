@@ -14,3 +14,7 @@ kafka:
   groupId: ${KAFKA_MESSAGE_GROUP_ID:"letter_message"}
   topicName: ${KAFKA_TOPIC_NAME:TelegramUpdate}
   isEnabled: true
+
+http:
+  controller:
+    isEnabled: true
