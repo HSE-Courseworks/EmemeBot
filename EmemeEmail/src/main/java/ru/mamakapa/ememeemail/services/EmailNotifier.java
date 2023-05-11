@@ -102,18 +102,20 @@ public class EmailNotifier {
         log.info("sending {} letters to {} users", letters.size(), users.size());
 
         for (var letter : letters){
-            LetterContent content = getLetterContent(letter);
+            var fileKeys = fileUploader.uploadFiles(letter.getFiles());
             for (var user : users){
+                LetterContent content = getLetterContent(letter, user.getChatId(), fileKeys);
                 updateSender.sendUpdate(user, content);
             }
             compiler.deleteLetterFiles(letter);
         }
     }
 
-    private LetterContent getLetterContent(EmailLetter letter){
+    private LetterContent getLetterContent(EmailLetter letter, Long chatId, List<String> fileKeys){
         return LetterContent.builder()
+                .chatId(chatId)
                 .messageContent(letter.getEnvelope() + "\n" + letter.getBodyPart())
-                .bucketFileNames(fileUploader.uploadFiles(letter.getFiles()))
+                .bucketFileNames(fileKeys)
                 .build();
     }
 }
