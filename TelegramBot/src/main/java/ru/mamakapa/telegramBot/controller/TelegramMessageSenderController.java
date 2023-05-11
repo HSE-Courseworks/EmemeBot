@@ -23,8 +23,8 @@ public class TelegramMessageSenderController {
     ) throws Exception {
         letterToUserHandler.handle(
                 new LetterToUser(
-                        (long) chatId,
                         emailLetterRequest.messageContent(),
+                        (long) chatId,
                         emailLetterRequest.fileLinks()
                 ));
     }
