@@ -5,6 +5,7 @@ EmemeBotLogs.log
 #project
 src/main/resources/*
 EmemeEmail/src/main/resources/*
+!EmemeEmail/src/main/resources/db
 !src/main/resources/application-test.properties
 HELP.md
 target/

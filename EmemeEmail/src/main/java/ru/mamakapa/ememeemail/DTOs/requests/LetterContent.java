@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record LetterContent(String messageContent, List<String> fileLinks) {
+public record LetterContent(String messageContent, Long chatId, List<String> fileKeys) {
 }
