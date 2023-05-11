@@ -4,7 +4,7 @@ import java.util.List;
 
 public record LetterToUser(
         Long chatId,
-        String message,
+        String messageContent,
         List<String> fileLinks
 ) {
 }
