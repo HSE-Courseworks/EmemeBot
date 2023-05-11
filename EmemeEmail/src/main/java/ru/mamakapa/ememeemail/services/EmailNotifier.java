@@ -115,7 +115,7 @@ public class EmailNotifier {
         return LetterContent.builder()
                 .chatId(chatId)
                 .messageContent(letter.getEnvelope() + "\n" + letter.getBodyPart())
-                .bucketFileNames(fileKeys)
+                .fileKeys(fileKeys)
                 .build();
     }
 }
