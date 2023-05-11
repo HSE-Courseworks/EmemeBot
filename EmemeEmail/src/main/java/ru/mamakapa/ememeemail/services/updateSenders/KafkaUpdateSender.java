@@ -1,6 +1,7 @@
 package ru.mamakapa.ememeemail.services.updateSenders;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import ru.mamakapa.ememeemail.DTOs.requests.LetterContent;
 import ru.mamakapa.ememeemail.entities.BotUser;
@@ -10,14 +11,16 @@ public class KafkaUpdateSender implements UpdateSender {
 
     final KafkaTemplate<Long, LetterContent> kafkaTemplate;
 
-    private final static String VK_TOPIC_NAME = "VkUpdate";
-    private final static String TELEGRAM_TOPIC_NAME = "TelegramUpdate";
+    @Value("${kafka.vkBotTopic}")
+    private String vkTopicName;
+    @Value("${kafka.tgBotTopic}")
+    private String tgTopicName;
 
     @Override
     public void sendUpdate(BotUser user, LetterContent content) {
         switch (user.getMessengerType()) {
-            case VK -> kafkaTemplate.send(VK_TOPIC_NAME, content);
-            case TG -> kafkaTemplate.send(TELEGRAM_TOPIC_NAME, content);
+            case VK -> kafkaTemplate.send(vkTopicName, content);
+            case TG -> kafkaTemplate.send(tgTopicName, content);
         }
     }
 }
