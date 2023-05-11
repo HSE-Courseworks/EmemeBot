@@ -13,6 +13,6 @@ public class LetterToUserHandler {
     }
 
     public void handle(LetterToUser letterToUser) throws Exception {
-        messageSender.send(Math.toIntExact(letterToUser.chatId()), letterToUser.message());
+        messageSender.send(Math.toIntExact(letterToUser.chatId()), letterToUser.messageContent());
     }
 }
