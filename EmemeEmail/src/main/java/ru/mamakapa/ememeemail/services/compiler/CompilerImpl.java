@@ -22,8 +22,6 @@ import static ru.mamakapa.ememeemail.services.compiler.utils.MimeDecoder.decodeM
 public class CompilerImpl implements Compiler{
     private final AbstractPartProcessor processor;
 
-    private final StringBuilder bodyPartOfLetter = new StringBuilder();
-
     public CompilerImpl(Path savingPath) {
         this.processor = new HtmlTextProcessor(new PlainTextProcessor(null, savingPath), savingPath);
     }
@@ -31,15 +29,16 @@ public class CompilerImpl implements Compiler{
     @Override
     public EmailLetter compile(Message message) throws MessagingException, IOException {
         EmailLetter letter = new EmailLetter();
+        StringBuilder bodyPartOfLetter = new StringBuilder();
         letter.setEnvelope(compileEnvelope(message));
         if (message.isMimeType("multipart/*")){
             Multipart multipart = (Multipart) message.getContent();
             int mpCount = multipart.getCount();
             for (int i = 0; i < mpCount; ++i){
-                buildLetter(multipart.getBodyPart(i), letter);
+                buildLetter(multipart.getBodyPart(i), letter, bodyPartOfLetter);
             }
         } else {
-            buildLetter(message, letter);
+            buildLetter(message, letter, bodyPartOfLetter);
         }
         letter.setBodyPart(bodyPartOfLetter.toString());
         return letter;
@@ -76,18 +75,19 @@ public class CompilerImpl implements Compiler{
         return envelope.toString();
     }
 
-    private void buildLetter(Part part, EmailLetter letter) throws MessagingException, IOException {
+    private void buildLetter(Part part, EmailLetter letter, StringBuilder bodyBuilder)
+            throws MessagingException, IOException {
         switch (processor.process(part)){
             case HtmlPart htmlPart -> {
                 letter.getFiles().add(htmlPart.image());
-                bodyPartOfLetter.append(getLinksForBodyPart(htmlPart.links()));
+                bodyBuilder.append(getLinksForBodyPart(htmlPart.links()));
             }
             case PlainTextPart plainTextPart -> {
-                bodyPartOfLetter.append(plainTextPart.content()).append("\n");
+                bodyBuilder.append(plainTextPart.content()).append("\n");
             }
             case AttachmentPart attachmentPart -> {
                 letter.getFiles().add(attachmentPart.file());
-                bodyPartOfLetter.append("Вложение: ").append(attachmentPart.file().getName()).append("\n");
+                bodyBuilder.append("Вложение: ").append(attachmentPart.file().getName()).append("\n");
             }
             case default -> log.info("Message part that cannot be processed");
         }

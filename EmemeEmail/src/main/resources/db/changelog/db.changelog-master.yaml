@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/migrations/create_db_for_email_service/imap_email.sql
   - include:
       file: db/migrations/create_db_for_email_service/botEmail.sql
+  - include:
+      file: db/migrations/create_s3_schema_to_manage_store_objects/storage_table.sql
