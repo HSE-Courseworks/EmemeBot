@@ -11,5 +11,6 @@ springdoc:
 
 kafka:
   serverUrl: ${KAFKA_SERVER_URL:localhost:9092}
+  groupId: ${KAFKA_MESSAGE_GROUP_ID:"letter_message"}
   topicName: ${KAFKA_TOPIC_NAME:TelegramUpdate}
   isEnabled: true
