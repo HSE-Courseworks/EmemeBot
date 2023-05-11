@@ -1,14 +1,13 @@
 package ru.mamakapa.telegramBot.configuration;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import ru.mamakapa.telegramBot.data.LetterToUser;
 import ru.mamakapa.telegramBot.kafka.KafkaMessageConsumer;
 import ru.mamakapa.telegramBot.service.LetterToUserHandler;
@@ -20,19 +19,16 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
     @Bean
-    KafkaMessageConsumer kafkaMessageConsumer(KafkaConfig kafkaConfig, LetterToUserHandler letterToUserHandler) {
-        return new KafkaMessageConsumer(kafkaTemplate(kafkaConfig), letterToUserHandler);
+    KafkaMessageConsumer kafkaMessageConsumer(LetterToUserHandler letterToUserHandler) {
+        return new KafkaMessageConsumer(letterToUserHandler);
     }
 
-    KafkaTemplate<Long, LetterToUser> kafkaTemplate(KafkaConfig kafkaConfig) {
-        return new KafkaTemplate<>(consumerConfig(kafkaConfig));
-    }
-
-    public ProducerFactory<Long, LetterToUser> consumerConfig(KafkaConfig kafkaConfig) {
+    @Bean
+    public ConsumerFactory<Long, LetterToUser> consumerConfig(KafkaConfig kafkaConfig) {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.serverUrl());
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(properties);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(properties);
     }
 }
