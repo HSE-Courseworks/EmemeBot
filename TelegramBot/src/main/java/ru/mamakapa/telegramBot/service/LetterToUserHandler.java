@@ -17,7 +17,9 @@ public class LetterToUserHandler {
     private final MessageSender<Integer, String> messageSender;
     private final AWSService awsService;
     private final FileSender fileSender;
-    private final static Path FILES_DIRECTORY_PATH = Paths.get("EmemeEmail/src/main/resources/savedir").toAbsolutePath();
+    private final static Path FILES_DIRECTORY_PATH = Paths
+            .get("EmemeEmail/src/main/resources/savedir")
+            .toAbsolutePath();
 
     public LetterToUserHandler(
             MessageSender<Integer, String> messageSender,
