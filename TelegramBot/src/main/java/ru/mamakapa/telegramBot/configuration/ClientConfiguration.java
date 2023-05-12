@@ -16,10 +16,11 @@ public class ClientConfiguration {
     private final static int TIMEOUT_RESPONSE = 10;
 
     @Bean
-    EmemeEmailHttpClient ememeEmailHttpClient() {
+    EmemeEmailHttpClient ememeEmailHttpClient(ServiceConfiguration serviceConfiguration) {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builder()
                 .clientAdapter(WebClientAdapter.forClient(
                         WebClient.builder()
+                                .baseUrl(serviceConfiguration.emailUrl())
                                 .clientConnector(new ReactorClientHttpConnector(HttpClient
                                         .create()
                                         .responseTimeout(Duration.ofSeconds(TIMEOUT_RESPONSE))

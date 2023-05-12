@@ -13,3 +13,13 @@ vk:
       callback:
         confirmationCode: ${SERVER_RESPONSE}
         secret: ${SECRET}
+
+kafka:
+  serverUrl: ${KAFKA_SERVER_URL:localhost:9092}
+  groupId: ${KAFKA_MESSAGE_GROUP_ID:"letter_message"}
+  topicName: ${KAFKA_TOPIC_NAME:VkUpdate}
+  isEnabled: true
+
+http:
+  controller:
+    isEnabled: true
