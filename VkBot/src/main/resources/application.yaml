@@ -23,3 +23,10 @@ kafka:
 http:
   controller:
     isEnabled: true
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  bucketName: ${AWS_BUCKET_NAME}
+  region: ${AWS_REGION:ru-central1}
+  endpoint: ${AWS_ENDPOINT:storage.yandexcloud.net}
