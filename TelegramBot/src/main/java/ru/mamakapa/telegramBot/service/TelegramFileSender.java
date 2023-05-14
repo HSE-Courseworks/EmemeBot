@@ -24,7 +24,8 @@ public class TelegramFileSender implements FileSender {
     }
 
     public TelegramFileSender(String botToken) {
-        this(new DefaultAbsSender(new DefaultBotOptions(), botToken) {});
+        this(new DefaultAbsSender(new DefaultBotOptions(), botToken) {
+        });
     }
 
     private final static Set<String> PHOTO_EXTENSIONS = new HashSet<>(Arrays.asList(
@@ -34,14 +35,14 @@ public class TelegramFileSender implements FileSender {
             "gif"
     ));
 
-    private enum FileType{
+    private enum FileType {
         PHOTO, DOCUMENT
     }
 
     @Override
     public void send(long chatId, File file) {
         try {
-            switch (getFileType(file)){
+            switch (getFileType(file)) {
                 case PHOTO -> sendPhoto(chatId, file);
                 case DOCUMENT -> sendDocument(chatId, file);
             }
@@ -60,9 +61,9 @@ public class TelegramFileSender implements FileSender {
 
     private FileType getFileType(File file) {
         String extension = getExtension(file.getName()).toLowerCase();
-        if(PHOTO_EXTENSIONS.contains(extension)){
+        if (PHOTO_EXTENSIONS.contains(extension)) {
             return FileType.PHOTO;
-        }else {
+        } else {
             return FileType.DOCUMENT;
         }
     }

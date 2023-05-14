@@ -9,7 +9,12 @@ import ru.mamakapa.telegramBot.configuration.ServiceConfiguration;
 import ru.mamakapa.telegramBot.configuration.TelegramConfiguration;
 
 @SpringBootApplication
-@EnableConfigurationProperties({TelegramConfiguration.class, AWSConfig.class, ServiceConfiguration.class, KafkaConfig.class})
+@EnableConfigurationProperties({
+        TelegramConfiguration.class,
+        AWSConfig.class,
+        ServiceConfiguration.class,
+        KafkaConfig.class
+})
 public class TelegramBotApplication {
     public static void main(String[] args) {
         SpringApplication.run(TelegramBotApplication.class, args);
