@@ -3,7 +3,10 @@
 На текущий момент реализована работа с мессенджерами
 <a href="https://vk.com/ememe_bot" target="_blank">Вконтакте</a> 
 и
-<a href="https://t.me/EmemeTelegramBot" target="_blank">Telegram</a> 
+<a href="https://t.me/EmemeTelegramBot" target="_blank">Telegram</a>
+## Архитектура проекта
+![Architecture](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2d2e4047-62d4-49ae-9ecf-c9051b88de50)
+
 ## EmemeEmail
 Сервис, отвечающий за обработку и отслеживание обновлений на электронных почтах пользователей. 
 В данном сервисе также производится регистрация пользователей и их эллектронных почт.
@@ -66,6 +69,8 @@ aws.endpoint=${AWS_ENDPOINT:storage.yandexcloud.net}
 ## EmemeSenderFunctionality
 Вспомогательный модуль-библеотека был сконструирован для общей реализации функционала микросервисов типа Sender(VkBot, TelegramBot, ...) отвечающих за пользовательское взаимодействие с чат-ботом в определенной социальной сети. (ВК, Телеграмм, ...)
 Абстрактный класс `BotCommand<MESSAGE>` с абстрактным методом `execute(MESSAGE message)` и полем `String command` вместе с конструктором который нужно будет переопределить классу наследнику, сделаны для более удобного добавления команд чат-бота и их выполнения, а класс `CommandHandler<MESSAGE>` реализован с конструктором со списком комманд и функцией определения имени комманды по классу MESSAGE `public CommandHandler(List<BotCommand<MESSAGE>> commands, Function<MESSAGE, String> commandNameFunction)` для добавления комманд и их соответствующей обработки.
+![изображение](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/b51aa671-edf3-4316-aef9-d874216b092f)
+
 ## TelegramBot и VkBot
 ### Конфигурация
 Для работоспособности проекта нужно определить некоторые общие обязательные конфигурации, такие как:
@@ -73,7 +78,8 @@ aws.endpoint=${AWS_ENDPOINT:storage.yandexcloud.net}
 * AWS_ACCESS_KEY
 * AWS_SECRET_KEY
 * AWS_BUCKET_NAME
-Однако у каждого микросервиса есть свои отдельные необходимые настройки доступа.
+
+Однако у каждого микросервиса есть свои отдельные необходимые настройки доступа:
 #### Telegram application.yaml
 * BOT_TOKEN - Токен телеграмм бота
 ```
@@ -151,5 +157,7 @@ aws:
   endpoint: ${AWS_ENDPOINT:storage.yandexcloud.net}
 ```
 
-[![REST API](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API)](https://git.io/typing-svg)
+[![REST API TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API)](https://git.io/typing-svg)
+![Telegram REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2be899fa-8d4a-4e53-bb5b-f667b4f67873)
+![VK REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/eb615248-1332-4ff3-ab38-19126a41b2bc)
 
