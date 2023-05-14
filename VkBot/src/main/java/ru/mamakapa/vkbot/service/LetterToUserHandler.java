@@ -1,5 +1,6 @@
 package ru.mamakapa.vkbot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.service.FileSender;
 import ru.mamakapa.ememeSenderFunctionality.bot.service.MessageSender;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Service
+@Slf4j
 public class LetterToUserHandler {
     private final MessageSender<Integer, String> messageSender;
     private final AWSService awsService;
@@ -45,6 +47,11 @@ public class LetterToUserHandler {
                 })
                 .toList();
         messageSender.send(chatId, letterToUser.messageContent());
-        files.forEach(file -> fileSender.send(chatId, file));
+        files.forEach(file ->{
+            log.info("Send file...");
+            fileSender.send(chatId, file);
+            log.info("Delete file...");
+            file.delete();
+        });
     }
 }
