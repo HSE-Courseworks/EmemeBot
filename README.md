@@ -161,8 +161,16 @@ aws:
 ```
 
 [![REST API TELEGRAM TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API+TELEGRAM+BOT+MICROSERVICE)](https://git.io/typing-svg)
+
+**Ручка** `/tgbot/updates/{chatId}` - предназначен для получения новых сообщений с почты пользователей чат-бота Телеграм
+
+**Ручка** `/` - для обработки входящих обновлений с Телеграмм сервера с помощью Webhook
 ![Telegram REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2be899fa-8d4a-4e53-bb5b-f667b4f67873)
 
 [![REST API VK TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API+VK+BOT+MICROSERVICE)](https://git.io/typing-svg)
+
+**Урл** `/vkbot/updates/{chatId}` - необходим при получении новых писем с почты пользователей чат-бота Вконтакте
+
+**Урл** `/` - нужен для процессинга webhook событий с сервера ВК
 ![VK REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/eb615248-1332-4ff3-ab38-19126a41b2bc)
 
