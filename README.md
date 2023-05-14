@@ -4,6 +4,9 @@
 <a href="https://vk.com/ememe_bot" target="_blank">Вконтакте</a> 
 и
 <a href="https://t.me/EmemeTelegramBot" target="_blank">Telegram</a>
+## Презентация проекта
+<a href="https://docs.google.com/presentation/d/1I3fnKtJ64J25Oi_S_Ny-8onJeZWncFCXZYRjP1AeLkg" target="_blank">Project Presentation</a>
+![изображение](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2c653802-47a2-477a-b360-8135798f8f10)
 ## Архитектура проекта
 ![Architecture](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2d2e4047-62d4-49ae-9ecf-c9051b88de50)
 
@@ -157,7 +160,9 @@ aws:
   endpoint: ${AWS_ENDPOINT:storage.yandexcloud.net}
 ```
 
-[![REST API TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API)](https://git.io/typing-svg)
+[![REST API TELEGRAM TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API+TELEGRAM+BOT+MICROSERVICE)](https://git.io/typing-svg)
 ![Telegram REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/2be899fa-8d4a-4e53-bb5b-f667b4f67873)
+
+[![REST API VK TITLE](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=REST+API+VK+BOT+MICROSERVICE)](https://git.io/typing-svg)
 ![VK REST API](https://github.com/HSE-Courseworks/EmemeBot/assets/62752481/eb615248-1332-4ff3-ab38-19126a41b2bc)
 
