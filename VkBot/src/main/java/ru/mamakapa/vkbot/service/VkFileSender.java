@@ -26,15 +26,18 @@ public class VkFileSender implements FileSender {
     private final GroupActor groupActor;
     private final VkApiClient vkApiClient = new VkApiClient(new HttpTransportClient());
     private final Random random = new Random();
-    private static final Set<String> FILE_EXTENSIONS_DENIED = new HashSet<>(Arrays.asList(
-            "exe",
-            "mp3",
-            ""
+    private static final Set<String> FILE_EXTENSIONS_ALLOWED = new HashSet<>(Arrays.asList(
+            "pptx",
+            "doc",
+            "docx",
+            "xlsx",
+            "pdf"
     ));
     private static final Set<String> PHOTO_EXTENSIONS = new HashSet<>(Arrays.asList(
             "png",
             "jpg",
-            "jpeg"
+            "jpeg",
+            "gif"
     ));
 
     private enum FileType {
@@ -120,7 +123,7 @@ public class VkFileSender implements FileSender {
             throws FileNotFoundException, ClientException, ApiException {
         log.info("Uploading document in attachments");
         String fileExtension = getExtension(file.getName());
-        if (fileExtensionDenied(fileExtension)) {
+        if (!fileExtensionAllowed(fileExtension)) {
             file = tryRenameFile(file);
         }
         String uploadUrl = vkApiClient
@@ -150,8 +153,8 @@ public class VkFileSender implements FileSender {
         return tempFile;
     }
 
-    private boolean fileExtensionDenied(String extension) {
-        return FILE_EXTENSIONS_DENIED.contains(extension);
+    private boolean fileExtensionAllowed(String extension) {
+        return FILE_EXTENSIONS_ALLOWED.contains(extension.toLowerCase());
     }
 
     private int getRandomId() {
