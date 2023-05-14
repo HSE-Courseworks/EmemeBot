@@ -22,7 +22,7 @@ public class AWSService {
 
     public File downloadFile(String fileKey, Path directoryPath) throws IOException {
         S3Object object = s3Client.getObject(config.bucketName(), fileKey);
-        File resFile = new File(directoryPath.toString() + object);
+        File resFile = new File(directoryPath.toString() + File.separator + fileKey);
         FileUtils.copyInputStreamToFile(object.getObjectContent(), resFile);
         return resFile;
     }
