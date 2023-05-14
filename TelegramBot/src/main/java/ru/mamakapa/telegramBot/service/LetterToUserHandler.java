@@ -45,6 +45,9 @@ public class LetterToUserHandler {
                 })
                 .toList();
         messageSender.send(chatId, letterToUser.messageContent());
-        files.forEach(file -> fileSender.send(chatId, file));
+        files.forEach(file ->{
+            fileSender.send(chatId, file);
+            file.delete();
+        });
     }
 }
