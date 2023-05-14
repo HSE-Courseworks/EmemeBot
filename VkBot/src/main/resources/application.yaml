@@ -24,6 +24,9 @@ http:
   controller:
     isEnabled: true
 
+service:
+  emailUrl: http://localhost:8080/
+
 aws:
   accessKey: ${AWS_ACCESS_KEY}
   secretKey: ${AWS_SECRET_KEY}

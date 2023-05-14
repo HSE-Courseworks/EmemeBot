@@ -35,15 +35,15 @@ public class KafkaConsumerConfiguration {
 
     public ConsumerFactory<Long, LetterToUser> consumerConfig(KafkaConfig kafkaConfig) {
         Map<String, Object> properties = new HashMap<>();
-        JsonDeserializer<LetterToUser> deserializer = new JsonDeserializer<>();
+        JsonDeserializer<LetterToUser> deserializer = new JsonDeserializer<>(LetterToUser.class);
         deserializer.addTrustedPackages("*");
         deserializer.setRemoveTypeHeaders(false);
         deserializer.setUseTypeMapperForKey(true);
 
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.serverUrl());
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfig.groupId());
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
 
         return new DefaultKafkaConsumerFactory<>(properties, new LongDeserializer(), deserializer);
     }
