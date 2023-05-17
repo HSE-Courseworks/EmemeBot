@@ -1,5 +1,6 @@
 package ru.mamakapa.ememeemail.services.jpa;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mamakapa.ememeemail.DTOs.requests.MessengerType;
@@ -12,22 +13,21 @@ import ru.mamakapa.ememeemail.exceptions.NotFoundEmemeException;
 import ru.mamakapa.ememeemail.repositories.jpa.JpaBotUserRepository;
 import ru.mamakapa.ememeemail.repositories.jpa.JpaImapEmailRepository;
 import ru.mamakapa.ememeemail.services.ImapEmailService;
+import ru.mamakapa.ememeemail.services.connection.EmailConnection;
 
+import javax.mail.MessagingException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class JpaImapEmailService implements ImapEmailService {
 
     final JpaImapEmailRepository emailRepository;
     final JpaBotUserRepository userRepository;
-
-    public JpaImapEmailService(JpaImapEmailRepository emailRepository, JpaBotUserRepository userRepository) {
-        this.emailRepository = emailRepository;
-        this.userRepository = userRepository;
-    }
+    final EmailConnection connection;
 
     @Override
     @Transactional
@@ -42,6 +42,7 @@ public class JpaImapEmailService implements ImapEmailService {
     @Transactional
     public ImapEmail add(Long chatId, MessengerType messengerType, String email, String password, String host) {
         var user = findUserByChatIdAndTypeOrThrowException(chatId, messengerType);
+        tryConnectToEmail(email, password, host);
         var emailToSave = emailRepository.findByAddress(email).orElseGet(() ->
                 emailRepository.save(new ImapEmailEntity(email, password, host,
                 Timestamp.from(Instant.now()), Timestamp.from(Instant.now())))
@@ -124,5 +125,18 @@ public class JpaImapEmailService implements ImapEmailService {
                 .lastChecked(entity.getLastChecked())
                 .lastMessageTime(entity.getLastUpdated())
                 .build();
+    }
+
+    private void tryConnectToEmail(String email, String password, String host) {
+        try {
+            var imapEmail = ImapEmail.builder()
+                    .email(email)
+                    .appPassword(password)
+                    .host(host)
+                    .build();
+            connection.connect(imapEmail);
+        } catch (MessagingException e) {
+            throw new BadRequestEmemeException("Wrong account data for " + email);
+        }
     }
 }
