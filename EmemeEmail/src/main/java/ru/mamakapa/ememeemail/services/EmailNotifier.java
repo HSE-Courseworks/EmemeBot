@@ -32,7 +32,7 @@ public class EmailNotifier {
     final private ImapEmailService emailService;
     final private EmailConnection emailConnection;
     final private Compiler compiler = new CompilerImpl(FILE_SAVING_PATH);
-    final static private int UPDATE_CHECK_INTERVAL = 30000;
+    final static private int UPDATE_CHECK_INTERVAL = 3000;
     final private UpdateSender updateSender;
     final FileUploader fileUploader;
 
