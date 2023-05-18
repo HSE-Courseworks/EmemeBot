@@ -1,4 +1,4 @@
-name: Email Service CD
+name: VKBot CD
 
 on:
   push:
