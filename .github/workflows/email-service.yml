@@ -1,0 +1,53 @@
+name: Email Service CD
+
+on:
+  push:
+    paths:
+      - 'EmemeEmail/**'
+      - '.github/workflows/email-service.yml'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Clean Maven Environment
+        run: mvn clean -pl EmemeEmail -am
+      - name: Build with Maven
+        run: mvn package -pl EmemeEmail -am
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ secrets.DOCKER_USERNAME }}/email-service
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: email-service
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
+
