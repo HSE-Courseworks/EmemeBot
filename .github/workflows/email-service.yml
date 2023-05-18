@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'EmemeEmail/**'
-      - - '.github/workflows/email-service.yml'
+      - '.github/workflows/email-service.yml'
 
 jobs:
 

@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'VkBot/**'
-      - - '.github/workflows/vk-bot.yml'
+      - '.github/workflows/vk-bot.yml'
 
 jobs:
 
