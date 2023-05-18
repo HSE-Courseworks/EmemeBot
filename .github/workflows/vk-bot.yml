@@ -3,8 +3,8 @@ name: Email Service CD
 on:
   push:
     paths:
-      - 'EmemeEmail/**'
-      - - '.github/workflows/email-service.yml'
+      - 'VkBot/**'
+      - - '.github/workflows/vk-bot.yml'
 
 jobs:
 
@@ -22,9 +22,9 @@ jobs:
           cache: maven
 
       - name: Clean Maven Environment
-        run: mvn clean -pl EmemeEmail -am
+        run: mvn clean -pl VkBot -am
       - name: Build with Maven
-        run: mvn package -pl EmemeEmail -am
+        run: mvn package -pl VkBot -am
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -39,15 +39,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/email-service
+          images: ${{ secrets.DOCKER_USERNAME }}/vk-bot
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: email-service
+          context: vk-bot
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
-
