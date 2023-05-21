@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 import ru.mamakapa.ememeSenderFunctionality.bot.EmemeBotFunctionality;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.CommandHandler;
 import ru.mamakapa.ememeSenderFunctionality.bot.command.exception.NonHandleCommandException;
-import ru.mamakapa.ememeSenderFunctionality.bot.service.*;
+import ru.mamakapa.ememeSenderFunctionality.bot.service.MessageSender;
+import ru.mamakapa.ememeSenderFunctionality.bot.service.UpdateHandler;
 import ru.mamakapa.vkbot.bot.command.*;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintEmailForRemoving;
 import ru.mamakapa.vkbot.bot.command.replayed.PrintNewEmailAddress;
@@ -24,9 +25,14 @@ import ru.mamakapa.vkbot.config.VkBotConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
+
+import static java.lang.Math.ceil;
+import static java.lang.Math.min;
 
 @Service
 public class VkBot implements MessageSender<Integer, String>, UpdateHandler<String> {
+    private static final int MAX_COUNT_WORDS_IN_MESSAGE = 4096;
     private static final int MAX_SIZE_KEYBOARD_BUTTONS = 10;
     private static final int MAX_COLUMN_COUNT = 2;
     private final VkApiClient vkApiClient;
@@ -133,13 +139,27 @@ public class VkBot implements MessageSender<Integer, String>, UpdateHandler<Stri
                 .execute();
     }
 
-    private void sendMessageText(int chatId, String messageText) throws ClientException, ApiException {
-        this.vkApiClient.messages()
-                .send(groupActor)
-                .randomId(getRandomMessageId())
-                .message(messageText)
-                .peerId(chatId)
-                .execute();
+    private static Stream<String> getTextParts(String text) {
+        return Stream
+                .iterate(0, i -> i + MAX_COUNT_WORDS_IN_MESSAGE)
+                .limit((long) ceil((double) text.length() / MAX_COUNT_WORDS_IN_MESSAGE))
+                .map(i -> text.substring(i, min(text.length(), i + MAX_COUNT_WORDS_IN_MESSAGE)));
+    }
+
+    private void sendMessageText(int chatId, String messageText) {
+        Stream<String> textParts = getTextParts(messageText);
+        textParts.forEach(text -> {
+                    try {
+                        this.vkApiClient.messages()
+                                .send(groupActor)
+                                .randomId(getRandomMessageId())
+                                .message(text)
+                                .peerId(chatId)
+                                .execute();
+                    } catch (ApiException | ClientException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     private int getRandomMessageId() {
