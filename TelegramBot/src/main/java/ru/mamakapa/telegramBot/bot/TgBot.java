@@ -20,9 +20,13 @@ import ru.mamakapa.telegramBot.bot.command.replayed.PrintNewEmail;
 import ru.mamakapa.telegramBot.configuration.TelegramConfiguration;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.lang.Math.*;
 
 @Component
 public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, MessageSender<Integer, String> {
+    private static final int MAX_COUNT_WORDS_IN_MESSAGE = 4096;
     private final CommandHandler<Message> commandHandler;
     private final CommandHandler<Message> replayedCommandHandler;
 
@@ -72,9 +76,25 @@ public class TgBot extends DefaultAbsSender implements UpdateHandler<Update>, Me
             commandHandler.handle(update.getMessage());
         }
     }
+
+    private static Stream<String> getTextParts(String text) {
+        return Stream
+                .iterate(0, i -> i + MAX_COUNT_WORDS_IN_MESSAGE)
+                .limit((long) ceil((double) text.length() / MAX_COUNT_WORDS_IN_MESSAGE))
+                .map(i -> text.substring(i, min(text.length(), i + MAX_COUNT_WORDS_IN_MESSAGE)));
+    }
+
     @Override
     public void send(Integer chatId, String message) throws Exception {
-        execute(new SendMessage(String.valueOf(chatId), message));
+        final String id = String.valueOf(chatId);
+        getTextParts(message)
+                .forEach(text -> {
+                    try {
+                        execute(new SendMessage(id, text));
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     public void sendMessageWithReply(int chatId, String message, String placeholder) {
